@@ -1,131 +1,68 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import React from 'react';
-import type {PropsWithChildren} from 'react';
 import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+  ThemeProvider,
+} from '@react-navigation/native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+import React, {useEffect} from 'react';
+import {Text, useColorScheme} from 'react-native';
+import Dashboard from './src/pages/Dashboard';
+import Analytics from './src/pages/Analytics';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {GlobalProvider} from './store/globalProvider';
+import migration from './api/migration';
+import db from './api/db';
+import {PaperProvider} from 'react-native-paper';
+const Tab = createBottomTabNavigator();
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  /*
-   * To keep the template simple and small we're adding padding to prevent view
-   * from rendering under the System UI.
-   * For bigger apps the reccomendation is to use `react-native-safe-area-context`:
-   * https://github.com/AppAndFlow/react-native-safe-area-context
-   *
-   * You can read more about it here:
-   * https://github.com/react-native-community/discussions-and-proposals/discussions/827
-   */
-  const safePadding = '5%';
+  useEffect(() => {
+    migration(db);
+  }, []);
 
   return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        style={backgroundStyle}>
-        <View style={{paddingRight: safePadding}}>
-          <Header/>
-        </View>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            paddingHorizontal: safePadding,
-            paddingBottom: safePadding,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </View>
+    <ThemeProvider value={isDarkMode ? DarkTheme : DefaultTheme}>
+      <GlobalProvider>
+        <PaperProvider>
+          <NavigationContainer>
+            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        @ts-ignore */}
+            <Tab.Navigator
+              screenOptions={({route}) => ({
+                tabBarIcon: ({color, size}) => {
+                  let iconName = 'icon-name' as string;
+                  if (route.name === 'Dashboard') {
+                    iconName = 'home';
+                    return <Icon name="dashboard" size={24} />;
+                  } else if (route.name === 'Analytics') {
+                    iconName = 'bar-chart';
+                    return <Icon name="equalizer" size={24} />;
+                  }
+                  return <Text>haha</Text>;
+                },
+                tabBarActiveTintColor: 'black',
+                tabBarInactiveTintColor: 'gray',
+              })}>
+              <Tab.Screen
+                name="Dashboard"
+                component={Dashboard}
+                options={{headerShown: false}}
+              />
+              <Tab.Screen
+                name="Analytics"
+                component={Analytics}
+                options={{headerShown: false}}
+              />
+            </Tab.Navigator>
+          </NavigationContainer>
+        </PaperProvider>
+      </GlobalProvider>
+    </ThemeProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;

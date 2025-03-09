@@ -11,3 +11,9 @@ split screen
 ---
 
 2.b npm run android ---> npm run log
+
+TODOS
+
+- rename app to "frugio"
+- change calendar
+- update color

@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/native';
 
 import React, {useEffect} from 'react';
-import {Text, useColorScheme} from 'react-native';
+import {Text} from 'react-native';
 import Dashboard from './src/pages/Dashboard';
 import Analytics from './src/pages/Analytics';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -15,6 +15,8 @@ import {GlobalProvider} from './store/globalProvider';
 import migration from './api/migration';
 import db from './api/db';
 import {PaperProvider} from 'react-native-paper';
+import {useColorScheme} from '@/hooks/useColorScheme';
+
 const Tab = createBottomTabNavigator();
 
 function App(): React.JSX.Element {
@@ -37,15 +39,19 @@ function App(): React.JSX.Element {
                   let iconName = 'icon-name' as string;
                   if (route.name === 'Dashboard') {
                     iconName = 'home';
-                    return <Icon name="dashboard" size={24} />;
+                    return <Icon name="dashboard" color={color} size={24} />;
                   } else if (route.name === 'Analytics') {
                     iconName = 'bar-chart';
-                    return <Icon name="equalizer" size={24} />;
+                    return <Icon name="equalizer" color={color} size={24} />;
                   }
                   return <Text>haha</Text>;
                 },
-                tabBarActiveTintColor: 'black',
+                tabBarActiveTintColor: isDarkMode ? 'white' : 'black',
                 tabBarInactiveTintColor: 'gray',
+                tabBarStyle: {
+                  backgroundColor: isDarkMode ? '#333' : '#fff',
+                  borderColor: 'transparent',
+                },
               })}>
               <Tab.Screen
                 name="Dashboard"

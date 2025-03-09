@@ -9,6 +9,7 @@ import {SECONDARY_COLOR, TERTIARY_COLOR} from '../../hooks/useThemeColor';
 import {GlobalContext} from '../../store/globalProvider';
 import {GlobalContextType} from '../../store/types';
 import {
+  archiveExpense,
   createExpense,
   getAllCategories,
   getExpenseById,
@@ -27,6 +28,7 @@ import TransactionMenu from '../components/TransactionMenu';
 import TransactionList from '../components/TransactionList';
 import BottomModal from '../components/BottomModal';
 import {Icon} from 'react-native-paper';
+import ThemedIcon from '../components/ThemedIcon';
 
 export interface IExpenseFormVal {
   categoryId?: number | null;
@@ -94,7 +96,7 @@ export default function Dashboard() {
   };
   const handleDelete = async () => {
     try {
-      // await archiveExpense(selectedId);
+      await archiveExpense(selectedId);
     } catch (error) {
       console.log('unable to delete', error);
     }
@@ -203,7 +205,7 @@ export default function Dashboard() {
       <ThemedView style={styles.addButtonView}>
         <TouchableOpacity onPress={handleOpen}>
           <ThemedView style={styles.addBtnContainer}>
-            <Icon source="plus" size={30} />
+            <ThemedIcon source="plus" size={30} />
           </ThemedView>
         </TouchableOpacity>
       </ThemedView>
@@ -227,7 +229,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     height: '100%',
-    marginTop: 32,
+    // marginTop: 32,
     paddingBottom: 250,
     position: 'relative',
     fontFamily: 'OpenSans',

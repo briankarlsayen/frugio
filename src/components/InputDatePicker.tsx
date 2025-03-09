@@ -1,11 +1,11 @@
 import React, {useCallback, useState} from 'react';
 import {TouchableOpacity, StyleSheet} from 'react-native';
-import {Icon} from 'react-native-paper';
 import {DatePickerModal} from 'react-native-paper-dates';
 import {ThemedView} from './ThemedView';
 import {DARK_INPUT_BG, LIGHT_INPUT_BG} from '@/hooks/useThemeColor';
 import {ThemedText} from './ThemedText';
 import {useColorScheme} from '@/hooks/useColorScheme';
+import ThemedIcon from './ThemedIcon';
 
 const MODAL_BG = '#201F1E';
 
@@ -42,11 +42,12 @@ export default function InputDatePicker({date, onSelect}) {
           presentationStyle="pageSheet"
           dateMode="start"
           animationType="slide"
+          saveLabel="Save date"
         />
         <TouchableOpacity
           onPress={() => setOpen(true)}
           style={{paddingRight: 10}}>
-          <Icon source="calendar" size={22} />
+          <ThemedIcon source="calendar" size={22} />
         </TouchableOpacity>
       </ThemedView>
     </ThemedView>

@@ -1,5 +1,5 @@
 {
-  "name": "alphacoders",
+  "name": "expense-tracker",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -8,7 +8,9 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "log": "react-native log-android"
+    "log": "react-native log-android",
+    "dev:bundle": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
+    "dev:build": "cd android && ./gradlew assembleDebug"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^7.2.0",

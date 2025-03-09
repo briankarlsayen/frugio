@@ -5,8 +5,6 @@ import {ThemedView} from './ThemedView';
 import {ThemedTextInput} from './ThemedTextInput';
 import {ThemedButton} from './ThemedButton';
 import {DARK_INPUT_BG, TERTIARY_COLOR} from '@/hooks/useThemeColor';
-import {Icon} from 'react-native-paper';
-// import InputDatePicker from './InputDatePicker';
 import {GlobalContext} from '@/store/globalProvider';
 import {GlobalContextType} from '@/store/types';
 import {IExpenseFormVal, IUpdateField} from '../pages/Dashboard';
@@ -14,6 +12,7 @@ import ThemedHr from './ThemedHr';
 import {en, registerTranslation} from 'react-native-paper-dates';
 import Dropdown from './DropdownModal';
 import InputDatePicker from './InputDatePicker';
+import ThemedIcon from './ThemedIcon';
 registerTranslation('en', en);
 // 353636
 const MODAL_BG = '#201F1E';
@@ -87,7 +86,7 @@ export default function BottomModal({
           </ThemedText>
 
           <TouchableOpacity onPress={handleClose}>
-            <Icon source="close" size={30} />
+            <ThemedIcon source="close" size={30} />
           </TouchableOpacity>
         </ThemedView>
         <ThemedView

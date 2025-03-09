@@ -76,6 +76,14 @@
     {
       "path": "node_modules/react-native-vector-icons/Fonts/Zocial.ttf",
       "sha1": "6a48a962b06cc3acbdfd61df0d9a34744eea5e8d"
+    },
+    {
+      "path": "assets/fonts/OpenSans-Regular.ttf",
+      "sha1": "ecdf1d58c0932a775c89b5ad48a7a0aaad66de4f"
+    },
+    {
+      "path": "assets/fonts/SpaceMono-Regular.ttf",
+      "sha1": "fae3a5a43b50e0408fd61e14383d94a023d332b0"
     }
   ]
 }

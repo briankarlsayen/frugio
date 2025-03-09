@@ -3,11 +3,13 @@ import {Divider} from 'react-native-paper';
 import CustomPieChart from '../components/CustomPieChart';
 import ExpenseCategoryCard from '../components/ExpenseCategoryCard';
 import TransactionMenu from '../components/TransactionMenu';
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import {filteredExpenses} from '@/utils';
 import {getExpenses} from '@/api';
 import {ThemedView} from '../components/ThemedView';
 import {ThemedText} from '../components/ThemedText';
+import {GlobalContext} from '@/store/globalProvider';
+import {GlobalContextType} from '@/store/types';
 
 interface IList {
   categoryId: number;
@@ -19,6 +21,9 @@ interface IList {
 }
 
 export default function Analytics() {
+  const context = useContext(GlobalContext);
+  const {state, updateCategories, updateExpenses, updateSelectedExpenseId} =
+    context as GlobalContextType;
   const [cb, setCb] = useState(false);
 
   const [transList, setTransList] = useState([]);
@@ -62,7 +67,7 @@ export default function Analytics() {
 
   useEffect(() => {
     fetchExpenses();
-  }, [cb]);
+  }, [cb, state?.expenses]);
 
   const [dateFilter, setDateFilter] = useState<any | null>(3);
   const handleDateFilter = (val: string) => {
@@ -124,7 +129,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     height: '100%',
-    marginTop: 32,
+    // marginTop: 32,
     paddingBottom: 250,
     position: 'relative',
   },

@@ -31,7 +31,7 @@ export function ThemedText({
       style={[
         {
           color,
-          fontFamily: 'OpenSans',
+          fontFamily: 'OpenSans-Regular',
         },
         type === 'default' ? styles.default : undefined,
         type === 'title' ? styles.title : undefined,

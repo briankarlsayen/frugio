@@ -69,7 +69,7 @@ export default function BottomModal({
       onRequestClose={handleClose}>
       <ThemedView
         darkColor={MODAL_BG}
-        style={[styles.bottomSheet, {height: windowHeight * 0.6}]}>
+        style={[styles.bottomSheet, {height: windowHeight * 0.53}]}>
         <ThemedView
           darkColor={MODAL_BG}
           style={{
@@ -97,7 +97,7 @@ export default function BottomModal({
         </ThemedView>
         <ThemedView
           darkColor={MODAL_BG}
-          style={{display: 'flex', width: '100%', gap: 10}}>
+          style={{display: 'flex', width: '100%', gap: 7}}>
           <ThemedText type="subtitle2">Description</ThemedText>
           <ThemedTextInput
             darkBgColor={INPUT_BG}
@@ -147,7 +147,7 @@ export default function BottomModal({
         <ThemedView
           style={{
             width: '100%',
-            paddingTop: 30,
+            paddingTop: 25,
             gap: 14,
             backgroundColor: 'transparent',
           }}>

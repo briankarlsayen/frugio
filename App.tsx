@@ -18,6 +18,7 @@ import {PaperProvider} from 'react-native-paper';
 import {useColorScheme} from '@/hooks/useColorScheme';
 import {ThemedView} from './src/components/ThemedView';
 import LoadingScreen from './src/components/LoadingScreen';
+import ToastManager from 'toastify-react-native';
 const Tab = createBottomTabNavigator();
 
 function App(): React.JSX.Element {
@@ -65,10 +66,22 @@ function App(): React.JSX.Element {
         return (
           <ThemeProvider value={isDarkMode ? DarkTheme : DefaultTheme}>
             <GlobalProvider>
+              <ToastManager
+                animationStyle="upInUpOut"
+                textStyle={{fontSize: 14}}
+                height={50}
+                position="top"
+                positionValue={24}
+                showCloseIcon={false}
+                showProgressBar={false}
+                duration={2500}
+                style={{zIndex: 100}}
+              />
               <PaperProvider>
                 <NavigationContainer>
                   {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment
         @ts-ignore */}
+
                   <Tab.Navigator
                     screenOptions={({route}) => ({
                       tabBarIcon: ({color, size}) => {

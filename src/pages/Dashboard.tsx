@@ -28,6 +28,7 @@ import TransactionMenu from '../components/TransactionMenu';
 import TransactionList from '../components/TransactionList';
 import BottomModal from '../components/BottomModal';
 import ThemedIcon from '../components/ThemedIcon';
+import {Toast} from 'toastify-react-native';
 
 export interface IExpenseFormVal {
   categoryId?: number | null;
@@ -66,27 +67,41 @@ export default function Dashboard() {
     clearForm();
     setOpen(false);
   };
+
+  const checkFormVal = (obj: Record<string, any>) => {
+    for (let key in obj) {
+      if (!obj[key]) return key;
+    }
+    return false;
+  };
+
   const handleSubmit = async () => {
     const convertedPayDate = convertUTCtoLocalDate(expenseFormVal?.payDate);
     try {
+      const checkFormErr = checkFormVal(expenseFormVal);
+      if (checkFormErr) {
+        return Toast.error('Please fill up form');
+      }
       const formVal = {
         ...expenseFormVal,
         payDate: convertedPayDate,
       };
       if (modalType === 'add') {
         await createExpense({
-          ...expenseFormVal,
-          payDate: convertedPayDate,
+          ...formVal,
         });
       } else {
         await updateExpense({
-          ...expenseFormVal,
-          payDate: convertedPayDate,
+          ...formVal,
           id: selectedId,
         });
       }
+
+      const message =
+        modalType === 'add' ? 'Successfully added' : 'Successfully updated';
+      Toast.success(message);
     } catch (error) {
-      console.log('show toast or something');
+      Toast.error('Ooops something went wrong');
     }
     setCb(!cb);
     handleClose();
@@ -95,8 +110,9 @@ export default function Dashboard() {
   const handleDelete = async () => {
     try {
       await archiveExpense(selectedId);
+      Toast.success('Successfully deleted');
     } catch (error) {
-      console.log('unable to delete', error);
+      Toast.error('Ooops something went wrong');
     }
     setCb(!cb);
     handleClose();
@@ -109,6 +125,17 @@ export default function Dashboard() {
 
   const updateField = ({name, value}: IUpdateField) => {
     if (!name) return;
+    if (name === 'amount') {
+      const checkVal = () => {
+        const len = value.split('.');
+        const real = len[0]?.length;
+        const dec = len[1]?.length;
+        if (!!dec && dec > 2) return false;
+        if (!!real && real > 6) return false;
+        return true;
+      };
+      if (!checkVal()) return;
+    }
     setExpenseFormVal({
       ...expenseFormVal,
       [name]: value,
@@ -143,7 +170,7 @@ export default function Dashboard() {
       });
       updateSelectedExpenseId(id);
     } catch (error) {
-      console.log('error', error);
+      Toast.error('Something went wrong');
     }
 
     setModalType('edit');
@@ -219,6 +246,12 @@ export default function Dashboard() {
           form={expenseFormVal}
         />
       )}
+      {/* <ThemedButton
+        title="press me!"
+        onPress={() => {
+          Toast.success('Promised is resolved');
+        }}
+      /> */}
     </ThemedView>
   );
 }

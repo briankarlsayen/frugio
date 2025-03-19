@@ -34,12 +34,16 @@ export default function ExpenseCard({
     <TouchableOpacity onLongPress={onLongPress}>
       <ThemedView style={styles.container}>
         <ThemedView style={styles.descContainer}>
-          <ThemedText type="subtitle">{name}</ThemedText>
+          <ThemedText type="subtitle" style={{flexWrap: 'wrap'}}>
+            {name}
+          </ThemedText>
           <ThemedText type="subtitle2" style={{opacity: 0.6}}>
             {category}
           </ThemedText>
         </ThemedView>
-        <ThemedText>{formatedAmount()}</ThemedText>
+        <ThemedView>
+          <ThemedText type="default">{formatedAmount()}</ThemedText>
+        </ThemedView>
       </ThemedView>
     </TouchableOpacity>
   );
@@ -53,13 +57,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     alignItems: 'center',
     backgroundColor: 'transparent',
+    flex: 1,
+    flexBasis: '100%',
+    flexWrap: 'nowrap',
   },
   descContainer: {
     display: 'flex',
     flexDirection: 'column',
-
     backgroundColor: 'transparent',
+    flexBasis: '70%',
   },
+
   recentContainer: {
     paddingHorizontal: 12,
   },

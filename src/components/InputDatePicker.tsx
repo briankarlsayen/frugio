@@ -13,7 +13,6 @@ export default function InputDatePicker({date, onSelect}) {
   const INPUT_BG = useColorScheme() === 'dark' ? DARK_INPUT_BG : LIGHT_INPUT_BG;
 
   const onChange = (_event, selectedDate) => {
-    const currentDate = selectedDate;
     onSelect(selectedDate);
   };
 

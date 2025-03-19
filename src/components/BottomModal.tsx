@@ -4,16 +4,14 @@ import {ThemedText} from './ThemedText';
 import {ThemedView} from './ThemedView';
 import {ThemedTextInput} from './ThemedTextInput';
 import {ThemedButton} from './ThemedButton';
-import {DARK_INPUT_BG, TERTIARY_COLOR} from '@/hooks/useThemeColor';
+import {DARK_INPUT_BG, LOGO_THEME_COLOR} from '@/hooks/useThemeColor';
 import {GlobalContext} from '@/store/globalProvider';
 import {GlobalContextType} from '@/store/types';
 import {IExpenseFormVal, IUpdateField} from '../pages/Dashboard';
 import ThemedHr from './ThemedHr';
-import {en, registerTranslation} from 'react-native-paper-dates';
 import Dropdown from './DropdownModal';
 import InputDatePicker from './InputDatePicker';
 import ThemedIcon from './ThemedIcon';
-registerTranslation('en', en);
 // 353636
 const MODAL_BG = '#201F1E';
 const INPUT_BG = DARK_INPUT_BG;
@@ -154,7 +152,7 @@ export default function BottomModal({
             backgroundColor: 'transparent',
           }}>
           <ThemedButton
-            darkColor={TERTIARY_COLOR}
+            darkColor={LOGO_THEME_COLOR}
             title="confirm"
             onPress={handleConfirm}
           />

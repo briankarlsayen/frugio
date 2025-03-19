@@ -1,27 +1,34 @@
-import React, {useCallback, useState} from 'react';
+import React from 'react';
 import {TouchableOpacity, StyleSheet} from 'react-native';
-import {DatePickerModal} from 'react-native-paper-dates';
 import {ThemedView} from './ThemedView';
 import {DARK_INPUT_BG, LIGHT_INPUT_BG} from '@/hooks/useThemeColor';
 import {ThemedText} from './ThemedText';
 import {useColorScheme} from '@/hooks/useColorScheme';
 import ThemedIcon from './ThemedIcon';
+import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 
 const MODAL_BG = '#201F1E';
 
 export default function InputDatePicker({date, onSelect}) {
-  const [open, setOpen] = useState(false);
-
   const INPUT_BG = useColorScheme() === 'dark' ? DARK_INPUT_BG : LIGHT_INPUT_BG;
 
-  const onDismissSingle = useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
-
-  const handleConfirm = val => {
-    const selectedDate: string | null = val?.date ?? null;
-    setOpen(false);
+  const onChange = (_event, selectedDate) => {
+    const currentDate = selectedDate;
     onSelect(selectedDate);
+  };
+
+  const showMode = currentMode => {
+    DateTimePickerAndroid.open({
+      value: date,
+      onChange,
+      mode: currentMode,
+      is24Hour: true,
+      display: 'calendar',
+    });
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
   };
 
   return (
@@ -32,21 +39,7 @@ export default function InputDatePicker({date, onSelect}) {
         <ThemedText style={{flex: 1}}>
           {date ? new Date(date)?.toLocaleDateString() : null}
         </ThemedText>
-        <DatePickerModal
-          locale="en"
-          mode="single"
-          visible={open}
-          onDismiss={onDismissSingle}
-          date={date}
-          onConfirm={handleConfirm}
-          presentationStyle="pageSheet"
-          dateMode="start"
-          animationType="slide"
-          saveLabel="Save date"
-        />
-        <TouchableOpacity
-          onPress={() => setOpen(true)}
-          style={{paddingRight: 10}}>
+        <TouchableOpacity onPress={showDatepicker} style={{paddingRight: 10}}>
           <ThemedIcon source="calendar" size={22} />
         </TouchableOpacity>
       </ThemedView>

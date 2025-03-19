@@ -51,7 +51,8 @@ export default function TransactionList({list, handleShowEdit}) {
       {transList?.map((item, index) => {
         return (
           <ThemedView key={index} style={{gap: 6}}>
-            <ThemedText style={{paddingTop: 8, paddingHorizontal: 6}}>
+            <ThemedText
+              style={{paddingTop: index > 0 ? 24 : 0, paddingHorizontal: 8}}>
               {formatDate(item?.date)}
             </ThemedText>
             <TransactionCards

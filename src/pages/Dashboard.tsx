@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
-import {SECONDARY_COLOR, TERTIARY_COLOR} from '../../hooks/useThemeColor';
+import {LOGO_THEME_COLOR, TERTIARY_COLOR} from '../../hooks/useThemeColor';
 import {GlobalContext} from '../../store/globalProvider';
 import {GlobalContextType} from '../../store/types';
 import {
@@ -27,7 +27,6 @@ import {ThemedText} from '../components/ThemedText';
 import TransactionMenu from '../components/TransactionMenu';
 import TransactionList from '../components/TransactionList';
 import BottomModal from '../components/BottomModal';
-import {Icon} from 'react-native-paper';
 import ThemedIcon from '../components/ThemedIcon';
 
 export interface IExpenseFormVal {
@@ -74,7 +73,6 @@ export default function Dashboard() {
         ...expenseFormVal,
         payDate: convertedPayDate,
       };
-      console.log('formVal', formVal);
       if (modalType === 'add') {
         await createExpense({
           ...expenseFormVal,
@@ -181,7 +179,7 @@ export default function Dashboard() {
   return (
     <ThemedView style={styles.container}>
       <ThemedView
-        darkColor={SECONDARY_COLOR}
+        darkColor={TERTIARY_COLOR}
         lightColor="gray"
         style={styles.expenseSummary}>
         <ThemedText style={{fontSize: 42, lineHeight: 42}}>
@@ -262,7 +260,7 @@ const styles = StyleSheet.create({
   addBtnContainer: {
     width: 70,
     height: 70,
-    backgroundColor: TERTIARY_COLOR,
+    backgroundColor: LOGO_THEME_COLOR,
     borderRadius: 100,
     display: 'flex',
     justifyContent: 'center',

@@ -5,7 +5,7 @@ export const DB_NAME = 'expense.db';
 
 // update when needed
 // lowest should be 1
-const DATABASE_VERSION = 2;
+const DATABASE_VERSION = 1;
 
 export const executeSqlAsync = (
   db: SQLiteDatabase,
@@ -129,21 +129,34 @@ const updateDatabaseVersion = async (db: SQLiteDatabase) => {
   await executeSqlAsync(db, `PRAGMA user_version = ${DATABASE_VERSION};`);
 };
 
-export default async function migration(db: SQLiteDatabase) {
+// return true | false
+export default async function migration(db: SQLiteDatabase): Promise<boolean> {
   try {
     const currentDbVersion = await getDatabaseVersion(db);
-    console.log('currentDbVersion', currentDbVersion);
+    console.log('currentDbVersion', typeof currentDbVersion);
+    console.log('DATABASE_VERSION', typeof DATABASE_VERSION);
+    console.log(
+      'check if greater than constant',
+      currentDbVersion < DATABASE_VERSION,
+    );
 
-    if (currentDbVersion === DATABASE_VERSION) return; // no DB change needed
-    else if (!!currentDbVersion || currentDbVersion < DATABASE_VERSION) {
+    if (currentDbVersion === DATABASE_VERSION) {
+      console.log('same db version');
+
+      return false; // no DB change needed
+    } else if (currentDbVersion <= 0 || currentDbVersion < DATABASE_VERSION) {
+      console.log('migrate');
       await generateTables(db);
       await generateCategories(db);
     } else {
       console.log('no change needed');
-      return;
+      return false;
     }
-    updateDatabaseVersion(db);
+    await updateDatabaseVersion(db);
+    await new Promise((resolve: any) => setTimeout(resolve, 5000));
+    return true;
   } catch (error) {
     console.log('Error: ', error);
+    return false;
   }
 }

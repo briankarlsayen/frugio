@@ -22,16 +22,17 @@ export function useThemeColor(
   }
 }
 
-export const PRIMARY_COLOR = '#1e3a3e';
-export const SECONDARY_COLOR = '#3a6e6e';
-// export const SECONDARY_COLOR = "#323939";
-export const TERTIARY_COLOR = '#5cb2af';
-export const FOURTIARY_COLOR = '#b7e1e1';
-export const FIFTH_COLOR = '#e0f5f5';
+export const LOGO_THEME_COLOR = '#E8653D'; // logo color
+
+export const PRIMARY_COLOR = '#3d3d3d'; // dark
+export const SECONDARY_COLOR = '#4d4d4d'; // lighter dark
+export const TERTIARY_COLOR = '#6b6b6b'; // lighter light dark
+export const FOURTIARY_COLOR = '#8a8a8a'; // lighter light light dark
+export const FIFTH_COLOR = '#b3b3b3'; // lighter light light light dark
 
 export const DEFAULT_WHITE_COLOR = '#F7F0F5';
 export const DEFAULT_RED_COLOR = '#FE5F55';
 export const DEFAULT_BLACK_COLOR = '#252727';
 
-export const DARK_INPUT_BG = '#323939';
+export const DARK_INPUT_BG = '#4d4d4d';
 export const LIGHT_INPUT_BG = '#BBBBBB';

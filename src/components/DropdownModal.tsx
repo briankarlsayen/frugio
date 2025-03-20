@@ -1,11 +1,11 @@
 import {DARK_INPUT_BG, LIGHT_INPUT_BG} from '@/hooks/useThemeColor';
 import React, {useState, useRef} from 'react';
 import {TouchableOpacity, Animated, StyleSheet, ScrollView} from 'react-native';
-import {Icon} from 'react-native-paper';
 import {ThemedView} from './ThemedView';
 import {ThemedText} from './ThemedText';
 import {ThemedTextInput} from './ThemedTextInput';
 import {useColorScheme} from '../../hooks/useColorScheme';
+import CustomIconButton from './CustomIconButton';
 
 // 353636
 const MODAL_BG = '#201F1E';
@@ -99,9 +99,12 @@ const Dropdown = ({value, options, onSelect}: IDropdown) => {
         )}
       </ThemedView>
       {!isOpen && selected && (
-        <TouchableOpacity onPress={handleClear} style={{paddingRight: 10}}>
-          <Icon source="close" size={22} />
-        </TouchableOpacity>
+        <CustomIconButton
+          onPress={handleClear}
+          name="close"
+          size={22}
+          style={{paddingRight: 10}}
+        />
       )}
     </ThemedView>
   );

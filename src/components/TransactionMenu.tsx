@@ -1,10 +1,9 @@
 import React from 'react';
-import {IconButton, Menu} from 'react-native-paper';
+import {Menu} from 'react-native-paper';
 import {filterOpts} from '@/constants/filter';
 import {ThemedView} from './ThemedView';
 import {ThemedText} from './ThemedText';
-import {TouchableOpacity, View} from 'react-native';
-import ThemedIcon from './ThemedIcon';
+import CustomIconButton from './CustomIconButton';
 
 export default function TransactionMenu({value, handleSelect}) {
   const [visible, setVisible] = React.useState(false);
@@ -29,14 +28,13 @@ export default function TransactionMenu({value, handleSelect}) {
         flexDirection: 'row',
         alignItems: 'center',
         paddingVertical: 8,
+        gap: 6,
       }}>
       <ThemedText>{displayText()}</ThemedText>
       <Menu
         visible={visible}
         onDismiss={closeMenu}
-        anchor={
-          <ThemedIconButton onPress={openMenu} source="calendar" size={20} />
-        }
+        anchor={<CustomIconButton onPress={openMenu} name="event" size={20} />}
         anchorPosition="bottom">
         <ThemedView style={{backgroundColor: 'transparent'}}>
           {transactionOpts.map((opt, index) => {
@@ -54,11 +52,3 @@ export default function TransactionMenu({value, handleSelect}) {
     </ThemedView>
   );
 }
-
-const ThemedIconButton = ({onPress, source, size}) => {
-  return (
-    <TouchableOpacity onPress={onPress} style={{padding: 4}}>
-      <ThemedIcon source="calendar" size={20} />
-    </TouchableOpacity>
-  );
-};

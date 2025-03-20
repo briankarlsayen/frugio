@@ -10,6 +10,8 @@ import {ThemedView} from '../components/ThemedView';
 import {ThemedText} from '../components/ThemedText';
 import {GlobalContext} from '@/store/globalProvider';
 import {GlobalContextType} from '@/store/types';
+import FilterCategoryModal from '../components/FilterCategoryModal';
+import CustomIconButton from '../components/CustomIconButton';
 
 interface IList {
   categoryId: number;
@@ -22,15 +24,15 @@ interface IList {
 
 export default function Analytics() {
   const context = useContext(GlobalContext);
-  const {state, updateCategories, updateExpenses, updateSelectedExpenseId} =
-    context as GlobalContextType;
+  const {state} = context as GlobalContextType;
   const [cb, setCb] = useState(false);
 
   const [transList, setTransList] = useState([]);
+  const [openFilter, setOpenFilter] = useState(false);
+  const [payCount, setPayCount] = useState([]);
 
   const processList = (list: any) => {
     const transactionLists: IList[] = [];
-    // if (!list?.length) return;
     list?.map((i, index) => {
       const d = transactionLists.findIndex(
         item => item?.categoryId === i?.category_id,
@@ -53,14 +55,30 @@ export default function Analytics() {
       }
     });
     transactionLists.sort((a, b) => b?.value - a?.value);
-    setTransList(transactionLists);
+
+    const activeCategories = state?.categories
+      .filter(f => f.is_active && f.is_checked)
+      .map(m => m.id);
+
+    const filteredTransList = transactionLists.filter(i =>
+      activeCategories.some(cat => cat === i.categoryId),
+    );
+
+    setPayCount(
+      transactionLists.map(e => {
+        return {
+          id: e.categoryId,
+          len: e.list?.length,
+        };
+      }),
+    );
+
+    setTransList(filteredTransList);
   };
 
   const fetchExpenses = async () => {
     const {from, to} = filteredExpenses(dateFilter);
     const res = await getExpenses({from, to});
-
-    // if (!res?.data?.length) return;
 
     processList(res?.data);
   };
@@ -69,14 +87,32 @@ export default function Analytics() {
     fetchExpenses();
   }, [cb, state?.expenses]);
 
+  const handleRefresh = () => {
+    setCb(!cb);
+  };
+
   const [dateFilter, setDateFilter] = useState<any | null>(3);
   const handleDateFilter = (val: string) => {
     setDateFilter(val);
     setCb(!cb);
   };
 
+  const handleOpenFilter = () => {
+    setOpenFilter(true);
+  };
+
+  const handleCloseFilter = () => {
+    setOpenFilter(false);
+  };
+
   return (
     <ThemedView style={styles.container}>
+      <FilterCategoryModal
+        open={openFilter}
+        handleClose={handleCloseFilter}
+        handleRefresh={handleRefresh}
+        payCount={payCount}
+      />
       <ThemedView style={{padding: 12, gap: 12}}>
         <ThemedView
           style={{
@@ -85,15 +121,19 @@ export default function Analytics() {
             alignItems: 'center',
             paddingHorizontal: 12,
 
-            width: 100,
+            width: '100%',
+            justifyContent: 'space-between',
           }}>
           <TransactionMenu value={dateFilter} handleSelect={handleDateFilter} />
-        </ThemedView>
 
-        <ThemedView>
-          <CustomPieChart data={transList} />
+          <CustomIconButton
+            onPress={handleOpenFilter}
+            name="more-vert"
+            size={24}
+          />
         </ThemedView>
       </ThemedView>
+      <CustomPieChart data={transList} />
       {!transList.length && (
         <ThemedView>
           <ThemedText type="title" style={{textAlign: 'center'}}>
@@ -129,7 +169,6 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     height: '100%',
-    // marginTop: 32,
     paddingBottom: 250,
     position: 'relative',
   },

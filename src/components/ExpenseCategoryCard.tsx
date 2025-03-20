@@ -1,5 +1,4 @@
 import {StyleSheet} from 'react-native';
-import React from 'react';
 import {ThemedView} from './ThemedView';
 import {ThemedText} from './ThemedText';
 
@@ -21,6 +20,7 @@ export default function ExpenseCategoryCard({
       minimumFractionDigits: 2,
     }).format(amount);
   };
+
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.descContainer}>
@@ -29,7 +29,9 @@ export default function ExpenseCategoryCard({
           {count} payments
         </ThemedText>
       </ThemedView>
-      <ThemedText>{formatedAmount()}</ThemedText>
+      <ThemedView style={{display: 'flex', flexDirection: 'row'}}>
+        <ThemedText>{formatedAmount()}</ThemedText>
+      </ThemedView>
     </ThemedView>
   );
 }

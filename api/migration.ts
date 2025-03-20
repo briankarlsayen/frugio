@@ -1,11 +1,10 @@
-// import db from "./db";
 import {SQLiteDatabase} from 'react-native-sqlite-storage';
 
 export const DB_NAME = 'expense.db';
 
 // update when needed
 // lowest should be 1
-const DATABASE_VERSION = 1;
+const DATABASE_VERSION = 13;
 
 export const executeSqlAsync = (
   db: SQLiteDatabase,
@@ -40,7 +39,9 @@ const generateTables = async (db: SQLiteDatabase): Promise<void> => {
       label TEXT NOT NULL,
       color TEXT NOT NULL,
       description TEXT NULL,
-      is_active INTEGER NOT NULL DEFAULT 1
+      is_checked INTEGER NOT NULL DEFAULT 1,
+      is_active INTEGER NOT NULL DEFAULT 1,
+      is_checked INTEGER NOT NULL DEFAULT 1,
       )`,
       `CREATE TABLE expenses (
       id INTEGER PRIMARY KEY,
@@ -129,12 +130,21 @@ const updateDatabaseVersion = async (db: SQLiteDatabase) => {
   await executeSqlAsync(db, `PRAGMA user_version = ${DATABASE_VERSION};`);
 };
 
+const updateTable = async (db: SQLiteDatabase) => {
+  await executeSqlAsync(
+    db,
+    `
+    ALTER TABLE categories 
+    ADD COLUMN is_checked INTEGER NOT NULL DEFAULT 1;
+    `,
+  );
+};
+
 // return true | false
 export default async function migration(db: SQLiteDatabase): Promise<boolean> {
   try {
     const currentDbVersion = await getDatabaseVersion(db);
-    console.log('currentDbVersion', typeof currentDbVersion);
-    console.log('DATABASE_VERSION', typeof DATABASE_VERSION);
+    console.log('currentDbVersion', currentDbVersion);
     console.log(
       'check if greater than constant',
       currentDbVersion < DATABASE_VERSION,
@@ -144,10 +154,12 @@ export default async function migration(db: SQLiteDatabase): Promise<boolean> {
       console.log('same db version');
 
       return false; // no DB change needed
-    } else if (currentDbVersion <= 0 || currentDbVersion < DATABASE_VERSION) {
-      console.log('migrate');
+    } else if (currentDbVersion <= 0) {
       await generateTables(db);
       await generateCategories(db);
+    } else if (currentDbVersion < DATABASE_VERSION) {
+      console.log('migrate');
+      // updateTable(db);
     } else {
       console.log('no change needed');
       return false;

@@ -189,3 +189,25 @@ export const archiveExpense = async (id: number): Promise<IDefaultResponse> => {
     };
   }
 };
+
+export const updateCategory = async ({
+  id,
+  isChecked,
+}): Promise<IDefaultResponse> => {
+  try {
+    const res = await putApi(
+      'UPDATE categories SET is_checked = ? WHERE id = ?',
+      [isChecked, id],
+    );
+
+    return {
+      // data: res,
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error,
+    };
+  }
+};

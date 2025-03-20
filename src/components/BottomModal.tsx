@@ -11,7 +11,7 @@ import {IExpenseFormVal, IUpdateField} from '../pages/Dashboard';
 import ThemedHr from './ThemedHr';
 import Dropdown from './DropdownModal';
 import InputDatePicker from './InputDatePicker';
-import ThemedIcon from './ThemedIcon';
+import CustomIconButton from './CustomIconButton';
 // 353636
 const MODAL_BG = '#201F1E';
 const INPUT_BG = DARK_INPUT_BG;
@@ -82,10 +82,7 @@ export default function BottomModal({
           <ThemedText type="title" style={{textTransform: 'capitalize'}}>
             {modalType}
           </ThemedText>
-
-          <TouchableOpacity onPress={handleClose}>
-            <ThemedIcon source="close" size={30} />
-          </TouchableOpacity>
+          <CustomIconButton onPress={handleClose} name={'close'} size={30} />
         </ThemedView>
         <ThemedView
           style={{

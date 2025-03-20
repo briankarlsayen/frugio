@@ -1,9 +1,4 @@
-import {
-  StyleSheet,
-  Dimensions,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, Dimensions, ScrollView} from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 import {LOGO_THEME_COLOR, TERTIARY_COLOR} from '../../hooks/useThemeColor';
 import {GlobalContext} from '../../store/globalProvider';
@@ -27,8 +22,8 @@ import {ThemedText} from '../components/ThemedText';
 import TransactionMenu from '../components/TransactionMenu';
 import TransactionList from '../components/TransactionList';
 import BottomModal from '../components/BottomModal';
-import ThemedIcon from '../components/ThemedIcon';
 import {Toast} from 'toastify-react-native';
+import CustomIconButton from '../components/CustomIconButton';
 
 export interface IExpenseFormVal {
   categoryId?: number | null;
@@ -186,8 +181,6 @@ export default function Dashboard() {
     const {from, to} = filteredExpenses(dateFilter);
     const res = await getExpenses({from, to});
 
-    // if (!res?.data?.length) return;
-
     const total = res?.data?.reduce((sum, item) => sum + item.amount, 0);
 
     setTotalExpenses(formatedAmount(total));
@@ -228,11 +221,12 @@ export default function Dashboard() {
         </ScrollView>
       </ThemedView>
       <ThemedView style={styles.addButtonView}>
-        <TouchableOpacity onPress={handleOpen}>
-          <ThemedView style={styles.addBtnContainer}>
-            <ThemedIcon source="plus" size={30} />
-          </ThemedView>
-        </TouchableOpacity>
+        <CustomIconButton
+          onPress={handleOpen}
+          name={'add'}
+          size={30}
+          style={styles.addBtnContainer}
+        />
       </ThemedView>
       {open && (
         <BottomModal
@@ -246,12 +240,6 @@ export default function Dashboard() {
           form={expenseFormVal}
         />
       )}
-      {/* <ThemedButton
-        title="press me!"
-        onPress={() => {
-          Toast.success('Promised is resolved');
-        }}
-      /> */}
     </ThemedView>
   );
 }
@@ -260,7 +248,6 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     height: '100%',
-    // marginTop: 32,
     paddingBottom: 250,
     position: 'relative',
     fontFamily: 'OpenSans',

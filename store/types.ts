@@ -6,6 +6,7 @@ export interface Category {
   color: string;
   description?: string;
   is_active: boolean;
+  is_checked: boolean;
 }
 
 export interface Expense {

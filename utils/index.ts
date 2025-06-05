@@ -1,7 +1,26 @@
+interface IFilteredExpenses {
+  dateFilter: number;
+  dateRange?: {
+    startDate: Date;
+    endDate: Date;
+  };
+}
+
 // return YYYY-MM-DD
 export function convertUTCtoLocalDate(utcDate) {
   const options = {timeZone: 'Asia/Singapore'};
   const formatter = new Intl.DateTimeFormat('en-CA', options); // 'en-CA' gives YYYY-MM-DD format
+  return formatter.format(utcDate);
+}
+
+export function convertUTCtoLocalDateShort(utcDate) {
+  const options = {timeZone: 'Asia/Singapore'};
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    month: '2-digit',
+    year: '2-digit',
+    day: '2-digit',
+    timeZone: 'Asia/Singapore',
+  }); // 'en-CA' gives YYYY-MM-DD format
   return formatter.format(utcDate);
 }
 
@@ -32,7 +51,10 @@ export const convertToReadableDate = dateString => {
   });
 };
 
-export const filteredExpenses = (dateFilter: number) => {
+export const filteredExpenses = ({
+  dateFilter,
+  dateRange,
+}: IFilteredExpenses) => {
   const today = new Date();
   const thisWeek = new Date();
   const thisMonth = new Date();
@@ -49,6 +71,14 @@ export const filteredExpenses = (dateFilter: number) => {
   const localThisWeek = convertUTCtoLocalDate(thisWeek);
   const localThisMonth = convertUTCtoLocalDate(thisMonth);
   const localThisYear = convertUTCtoLocalDate(thisYear);
+
+  console.log('dateRange', dateRange);
+
+  const localStartDate = convertUTCtoLocalDate(dateRange?.startDate);
+  const localEndDate = convertUTCtoLocalDate(dateRange?.endDate);
+
+  console.log('localStartDate', localStartDate);
+  console.log('localEndDate', localEndDate);
 
   let from = null;
   let to = null;
@@ -70,6 +100,9 @@ export const filteredExpenses = (dateFilter: number) => {
       from = localThisYear;
       to = localToday;
       break;
+    case 5:
+      from = localStartDate;
+      to = localEndDate;
   }
 
   return {

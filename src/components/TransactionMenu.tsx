@@ -1,9 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Menu} from 'react-native-paper';
 import {filterOpts} from '@/constants/filter';
 import {ThemedView} from './ThemedView';
 import {ThemedText} from './ThemedText';
 import CustomIconButton from './CustomIconButton';
+import DateRangeModal from './DateRangeModal';
+import {convertUTCtoLocalDateShort} from '@/utils';
 
 export default function TransactionMenu({value, handleSelect}) {
   const [visible, setVisible] = React.useState(false);
@@ -12,14 +14,40 @@ export default function TransactionMenu({value, handleSelect}) {
 
   const closeMenu = () => setVisible(false);
 
+  const [dprOpen, setDprOpen] = useState(false);
+  const [dateRange, setDateRange] = useState<{startDate?: any; endDate?: any}>(
+    {},
+  );
+
   const transactionOpts = filterOpts;
   const handleSelectOpt = opt => {
-    handleSelect(opt?.value);
+    if (opt?.value === 5) {
+      setDprOpen(true);
+    } else {
+      handleSelect(opt?.value);
+    }
     closeMenu();
   };
 
   const displayText = () => {
-    return transactionOpts.find(t => t.value === value)?.name;
+    if (value !== 5) return transactionOpts.find(t => t.value === value)?.name;
+
+    return `${convertUTCtoLocalDateShort(
+      dateRange?.startDate,
+    )} - ${convertUTCtoLocalDateShort(dateRange?.endDate)}`;
+  };
+
+  const closeDateRangeModal = ({
+    startDate,
+    endDate,
+  }: {
+    startDate?: Date;
+    endDate?: Date;
+  }) => {
+    if (!startDate || !endDate) return setDprOpen(false);
+    setDateRange({startDate, endDate});
+    handleSelect(5, {startDate, endDate});
+    setDprOpen(false);
   };
   return (
     <ThemedView
@@ -30,7 +58,8 @@ export default function TransactionMenu({value, handleSelect}) {
         paddingVertical: 8,
         gap: 6,
       }}>
-      <ThemedText>{displayText()}</ThemedText>
+      <ThemedText type="subtitle2">{displayText()}</ThemedText>
+      <DateRangeModal open={dprOpen} handleClose={closeDateRangeModal} />
       <Menu
         visible={visible}
         onDismiss={closeMenu}

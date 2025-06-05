@@ -15,4 +15,8 @@ export const filterOpts = [
     name: 'This year',
     value: 4,
   },
+  {
+    name: 'Date range',
+    value: 5,
+  },
 ];

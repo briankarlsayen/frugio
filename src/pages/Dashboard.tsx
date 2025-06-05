@@ -57,6 +57,7 @@ export default function Dashboard() {
   });
   const [dateFilter, setDateFilter] = useState<any | null>(3);
   const [totalExpenses, setTotalExpenses] = useState<string>('');
+  const [dateRange, setDateRange] = useState(null);
 
   const handleClose = () => {
     clearForm();
@@ -146,7 +147,8 @@ export default function Dashboard() {
     updateSelectedExpenseId(null);
   };
 
-  const handleDateFilter = (val: string) => {
+  const handleDateFilter = (val: string, dates: any) => {
+    if (dates) setDateRange(dates);
     setDateFilter(val);
     setCb(!cb);
   };
@@ -178,7 +180,7 @@ export default function Dashboard() {
   };
 
   const fetchExpenses = async () => {
-    const {from, to} = filteredExpenses(dateFilter);
+    const {from, to} = filteredExpenses({dateFilter, dateRange});
     const res = await getExpenses({from, to});
 
     const total = res?.data?.reduce((sum, item) => sum + item.amount, 0);
@@ -273,6 +275,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   addButtonView: {
+    backgroundColor: 'transparent',
     position: 'absolute',
     bottom: 60,
     right: 20,

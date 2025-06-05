@@ -30,6 +30,7 @@ export default function Analytics() {
   const [transList, setTransList] = useState([]);
   const [openFilter, setOpenFilter] = useState(false);
   const [payCount, setPayCount] = useState([]);
+  const [dateRange, setDateRange] = useState(null);
 
   const processList = (list: any) => {
     const transactionLists: IList[] = [];
@@ -77,7 +78,7 @@ export default function Analytics() {
   };
 
   const fetchExpenses = async () => {
-    const {from, to} = filteredExpenses(dateFilter);
+    const {from, to} = filteredExpenses({dateFilter, dateRange});
     const res = await getExpenses({from, to});
 
     processList(res?.data);
@@ -92,7 +93,8 @@ export default function Analytics() {
   };
 
   const [dateFilter, setDateFilter] = useState<any | null>(3);
-  const handleDateFilter = (val: string) => {
+  const handleDateFilter = (val: string, dates: any) => {
+    setDateRange(dates);
     setDateFilter(val);
     setCb(!cb);
   };
@@ -107,32 +109,6 @@ export default function Analytics() {
 
   return (
     <ThemedView style={styles.container}>
-      <FilterCategoryModal
-        open={openFilter}
-        handleClose={handleCloseFilter}
-        handleRefresh={handleRefresh}
-        payCount={payCount}
-      />
-      <ThemedView style={{padding: 12, gap: 12}}>
-        <ThemedView
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            paddingHorizontal: 12,
-
-            width: '100%',
-            justifyContent: 'space-between',
-          }}>
-          <TransactionMenu value={dateFilter} handleSelect={handleDateFilter} />
-
-          <CustomIconButton
-            onPress={handleOpenFilter}
-            name="more-vert"
-            size={24}
-          />
-        </ThemedView>
-      </ThemedView>
       <CustomPieChart data={transList} />
       {!transList.length && (
         <ThemedView>
@@ -141,6 +117,42 @@ export default function Analytics() {
           </ThemedText>
         </ThemedView>
       )}
+
+      <ThemedView
+        style={{boxShadow: '0 1px 4px rgba(0, 0, 0, 0.4)', marginTop: 12}}>
+        <FilterCategoryModal
+          open={openFilter}
+          handleClose={handleCloseFilter}
+          handleRefresh={handleRefresh}
+          payCount={payCount}
+        />
+        <ThemedView style={{paddingHorizontal: 12, paddingTop: 8, gap: 12}}>
+          <ThemedView
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 12,
+
+              width: '100%',
+              justifyContent: 'space-between',
+            }}>
+            <ThemedView style={{display: 'flex', flexDirection: 'row', gap: 8}}>
+              <ThemedText>Chart</ThemedText>
+              <CustomIconButton
+                onPress={handleOpenFilter}
+                name="tune"
+                // name="more-vert"
+                size={24}
+              />
+            </ThemedView>
+            <TransactionMenu
+              value={dateFilter}
+              handleSelect={handleDateFilter}
+            />
+          </ThemedView>
+        </ThemedView>
+      </ThemedView>
 
       <ThemedView style={styles.recentContainer}>
         <ScrollView
@@ -171,6 +183,7 @@ const styles = StyleSheet.create({
     height: '100%',
     paddingBottom: 250,
     position: 'relative',
+    paddingTop: 12,
   },
   recentContainer: {
     paddingHorizontal: 12,

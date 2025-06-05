@@ -137,19 +137,26 @@ export default function Analytics() {
               width: '100%',
               justifyContent: 'space-between',
             }}>
-            <ThemedView style={{display: 'flex', flexDirection: 'row', gap: 8}}>
-              <ThemedText>Chart</ThemedText>
+            <ThemedView
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: 8,
+                alignItems: 'center',
+              }}>
+              <ThemedText type="defaultSemiBold">Chart</ThemedText>
               <CustomIconButton
                 onPress={handleOpenFilter}
                 name="tune"
-                // name="more-vert"
                 size={24}
               />
             </ThemedView>
-            <TransactionMenu
-              value={dateFilter}
-              handleSelect={handleDateFilter}
-            />
+            <ThemedView>
+              <TransactionMenu
+                value={dateFilter}
+                handleSelect={handleDateFilter}
+              />
+            </ThemedView>
           </ThemedView>
         </ThemedView>
       </ThemedView>
@@ -183,7 +190,7 @@ const styles = StyleSheet.create({
     height: '100%',
     paddingBottom: 250,
     position: 'relative',
-    paddingTop: 12,
+    paddingTop: 42,
   },
   recentContainer: {
     paddingHorizontal: 12,

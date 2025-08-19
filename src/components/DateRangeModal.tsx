@@ -38,7 +38,8 @@ const DateRangeModal = ({open, handleClose}) => {
 
   return (
     <Modal
-      animationType="slide"
+      statusBarTranslucent
+      animationType="fade"
       transparent={true}
       visible={open}
       onRequestClose={handleClose}>

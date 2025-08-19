@@ -6,7 +6,7 @@ import {
 } from '@react-navigation/native';
 
 import React, {useEffect, useState} from 'react';
-import {Text} from 'react-native';
+import {StatusBar, Text} from 'react-native';
 import Dashboard from './src/pages/Dashboard';
 import Analytics from './src/pages/Analytics';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -79,6 +79,7 @@ function App(): React.JSX.Element {
               />
               <PaperProvider>
                 <NavigationContainer>
+                  {/* <StatusBar translucent hidden={true} /> */}
                   {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment
         @ts-ignore */}
 

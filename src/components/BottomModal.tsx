@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {Modal, StyleSheet, TouchableOpacity} from 'react-native';
+import {Modal, StyleSheet} from 'react-native';
 import {ThemedText} from './ThemedText';
 import {ThemedView} from './ThemedView';
 import {ThemedTextInput} from './ThemedTextInput';
@@ -63,6 +63,7 @@ export default function BottomModal({
 
   return (
     <Modal
+      statusBarTranslucent
       animationType="fade"
       transparent={true}
       visible={open}
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   overlay: {
-    flex: 1,
+    ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.5)', // 👈 semi-transparent dark background
     justifyContent: 'center',
     alignItems: 'center',

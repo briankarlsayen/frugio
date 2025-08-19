@@ -42,57 +42,62 @@ const DateRangeModal = ({open, handleClose}) => {
       transparent={true}
       visible={open}
       onRequestClose={handleClose}>
-      <ThemedView
-        darkColor={MODAL_BG}
-        style={[styles.bottomSheet, {height: windowHeight * 0.36}]}>
+      <ThemedView style={styles.overlay}>
         <ThemedView
           darkColor={MODAL_BG}
-          style={{
-            flex: 0,
-            width: '100%',
-            justifyContent: 'space-between',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <ThemedText type="title" style={{textTransform: 'capitalize'}}>
-            Select Dates
-          </ThemedText>
-          <CustomIconButton onPress={handleClose} name={'close'} size={30} />
-        </ThemedView>
-        <ThemedView
-          style={{
-            width: '100%',
-            paddingVertical: 10,
-            backgroundColor: 'transparent',
-          }}>
-          <ThemedHr />
-        </ThemedView>
+          style={[styles.bottomSheet, {height: windowHeight * 0.36}]}>
+          <ThemedView
+            darkColor={MODAL_BG}
+            style={{
+              flex: 0,
+              width: '100%',
+              justifyContent: 'space-between',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <ThemedText type="title" style={{textTransform: 'capitalize'}}>
+              Select Dates
+            </ThemedText>
+            <CustomIconButton onPress={handleClose} name={'close'} size={30} />
+          </ThemedView>
+          <ThemedView
+            style={{
+              width: '100%',
+              paddingVertical: 10,
+              backgroundColor: 'transparent',
+            }}>
+            <ThemedHr />
+          </ThemedView>
 
-        <ThemedView
-          darkColor={MODAL_BG}
-          style={{display: 'flex', width: '100%', gap: 7}}>
-          <ThemedText type="subtitle2">Start Date</ThemedText>
-          <InputDatePicker date={form?.startDate} onSelect={selectStartDate} />
-          <ThemedText type="subtitle2">End Date</ThemedText>
-          <InputDatePicker date={form?.endDate} onSelect={selectEndDate} />
-        </ThemedView>
-        {isError && (
-          <ThemedText type="subtitle2" style={{color: 'red', paddingTop: 4}}>
-            Invalid selected dates
-          </ThemedText>
-        )}
-        <ThemedView
-          style={{
-            width: '100%',
-            paddingTop: 25,
-            gap: 14,
-            backgroundColor: 'transparent',
-          }}>
-          <ThemedButton
-            darkColor={LOGO_THEME_COLOR}
-            title="confirm"
-            onPress={handleConfirm}
-          />
+          <ThemedView
+            darkColor={MODAL_BG}
+            style={{display: 'flex', width: '100%', gap: 7}}>
+            <ThemedText type="subtitle2">Start Date</ThemedText>
+            <InputDatePicker
+              date={form?.startDate}
+              onSelect={selectStartDate}
+            />
+            <ThemedText type="subtitle2">End Date</ThemedText>
+            <InputDatePicker date={form?.endDate} onSelect={selectEndDate} />
+          </ThemedView>
+          {isError && (
+            <ThemedText type="subtitle2" style={{color: 'red', paddingTop: 4}}>
+              Invalid selected dates
+            </ThemedText>
+          )}
+          <ThemedView
+            style={{
+              width: '100%',
+              paddingTop: 25,
+              gap: 14,
+              backgroundColor: 'transparent',
+            }}>
+            <ThemedButton
+              darkColor={LOGO_THEME_COLOR}
+              title="confirm"
+              onPress={handleConfirm}
+            />
+          </ThemedView>
         </ThemedView>
       </ThemedView>
     </Modal>
@@ -123,6 +128,12 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     fontSize: 16,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)', // 👈 semi-transparent dark background
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

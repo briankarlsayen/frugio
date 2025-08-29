@@ -1,19 +1,53 @@
-To run application:
+# Frugio
 
-1. Create file named expense.db for sqlite database.
+Manage your budget effortlessly with our powerful this mobile application. Monitor spending and save it securely without own device.
 
-2. Start script
+## Features
 
-split screen
+- Privately secure you data on your own
+- Display spending reports on chart
 
-2.a npm run start
+## Tech Stacks
 
----
+- **Framework**: React Native(frontend)
+- **Database**: SQLite
+- **State Management**: useContext
+- **Styling**: StyleSheet
 
-2.b npm run android ---> npm run log
+## Installation
 
-TODOS
+#### Clone repository
 
-- rename app to "frugio"
-- change calendar
-- update color
+#### Install dependencies
+
+```
+npm install
+```
+
+#### Create .db file
+
+```
+touch expense.db
+```
+
+#### Start application
+
+1. Run split screen
+
+1.a
+
+```
+npm run start
+```
+
+1.b
+
+```
+npm run android
+```
+
+2. See logs
+
+```
+npm run log
+```

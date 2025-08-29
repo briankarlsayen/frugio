@@ -34,13 +34,13 @@ touch expense.db
 
 1. Run split screen
 
-1.a
+- first screen
 
 ```
 npm run start
 ```
 
-1.b
+- second screen
 
 ```
 npm run android

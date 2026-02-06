@@ -44,7 +44,17 @@ interface ICreateExpsenseProps {
   description?: string;
 }
 
+interface ICreateCategoryProps {
+  color: string;
+  label: string;
+  description: string;
+}
+
 interface IUpdateExpenseProps extends ICreateExpsenseProps {
+  id: number;
+}
+
+interface IUpdateCategoryProps extends ICreateCategoryProps {
   id: number;
 }
 
@@ -66,6 +76,84 @@ export const getAllCategories = async (): Promise<IGetAllCategories> => {
       error,
     };
   }
+};
+
+export const createCategory = async ({
+  label,
+  description,
+  color,
+}: ICreateCategoryProps): Promise<DefaultApiResponse> => {
+  try {
+    const res = await postApi(
+      'INSERT INTO categories (label, description, color) VALUES (?, ?, ?)',
+      [label, description, color],
+    );
+    console.log('res', res);
+    return {
+      // data,
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: true,
+      error,
+    };
+  }
+};
+
+export const updateCategory = async ({
+  id,
+  label,
+  description,
+  color,
+}: IUpdateCategoryProps): Promise<IDefaultResponse> => {
+  try {
+    const res = await putApi(
+      'UPDATE categories SET label = ?, description = ?, color = ? WHERE id = ?',
+      [label, description, color, id],
+    );
+    // console.log('res', res);
+    return {
+      // data,
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: true,
+      error,
+    };
+  }
+};
+
+export const archiveCategory = async (
+  id: number,
+): Promise<IDefaultResponse> => {
+  try {
+    // check if category has expenses using it
+    const expenses = await getApi(
+      `SELECT * FROM expenses WHERE category_id = ?`,
+      [id],
+    );
+    console.log('expenses', expenses);
+    if (expenses.length) {
+      throw new Error('Category is being used');
+    }
+    const res = await putApi(
+      'UPDATE categories SET is_active = 0 WHERE id = ?',
+      [id],
+    );
+    // console.log('res', res);
+    return {
+      // data,
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: true,
+      error,
+    };
+  }
+  return;
 };
 
 export const createExpense = async ({
@@ -190,7 +278,7 @@ export const archiveExpense = async (id: number): Promise<IDefaultResponse> => {
   }
 };
 
-export const updateCategory = async ({
+export const updateCategoryChecked = async ({
   id,
   isChecked,
 }): Promise<IDefaultResponse> => {

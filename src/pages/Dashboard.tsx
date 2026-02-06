@@ -232,6 +232,7 @@ export default function Dashboard() {
       </ThemedView>
       {open && (
         <BottomModal
+          name="dashboard"
           open={open}
           handleClose={handleClose}
           windowHeight={windowHeight}

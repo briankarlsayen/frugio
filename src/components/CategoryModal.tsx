@@ -1,5 +1,11 @@
-import React, {useContext} from 'react';
-import {Modal, StyleSheet} from 'react-native';
+import React, {useContext, useState} from 'react';
+import {
+  Modal,
+  StyleSheet,
+  Touchable,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {ThemedText} from './ThemedText';
 import {ThemedView} from './ThemedView';
 import {ThemedTextInput} from './ThemedTextInput';
@@ -7,11 +13,12 @@ import {ThemedButton} from './ThemedButton';
 import {DARK_INPUT_BG, LOGO_THEME_COLOR} from '@/hooks/useThemeColor';
 import {GlobalContext} from '@/store/globalProvider';
 import {GlobalContextType} from '@/store/types';
-import {IExpenseFormVal, IUpdateField} from '../pages/Dashboard';
 import ThemedHr from './ThemedHr';
 import Dropdown from './DropdownModal';
 import InputDatePicker from './InputDatePicker';
 import CustomIconButton from './CustomIconButton';
+import {ICategoryForm, IUpdateField} from '../pages/Categories';
+import ColorPicker from 'react-native-wheel-color-picker';
 // 353636
 const MODAL_BG = '#201F1E';
 const INPUT_BG = DARK_INPUT_BG;
@@ -22,13 +29,13 @@ interface IBottomModal {
   handleClose: () => void;
   windowHeight: number;
   modalType: 'add' | 'edit';
-  form: IExpenseFormVal;
+  form: ICategoryForm;
   updateForm: (val: IUpdateField) => void;
   handleSubmit: () => void;
   handleDelete: () => void;
 }
 
-export default function BottomModal({
+export default function CategoryModal({
   name,
   open,
   handleClose,
@@ -39,28 +46,14 @@ export default function BottomModal({
   handleSubmit,
   handleDelete,
 }: IBottomModal) {
-  const context = useContext(GlobalContext);
-  const {state} = context as GlobalContextType;
-
   const handleConfirm = () => {
     handleSubmit();
   };
+  const [showModal, setShowModal] = useState(false);
+  const [color, setColor] = useState('#00ff00');
 
-  const handleSelect = (item: any) => {
-    updateForm({name: 'categoryId', value: item});
-  };
-
-  const dropDownOpt = state.categories?.length
-    ? state.categories.map(category => {
-        return {
-          label: category?.label,
-          value: category?.id,
-        };
-      })
-    : [];
-
-  const handleSelectData = (val: any) => {
-    updateForm({name: 'payDate', value: val});
+  const changeColor = (e: string) => {
+    updateForm({name: 'color', value: e});
   };
 
   return (
@@ -71,6 +64,40 @@ export default function BottomModal({
       visible={open}
       onRequestClose={handleClose}>
       <ThemedView style={styles.overlay}>
+        <Modal visible={showModal} animationType="slide">
+          <ThemedView style={{flex: 1, padding: 20, gap: 20}}>
+            <ThemedView
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <ThemedText>Selected: {form.color}</ThemedText>
+              <CustomIconButton
+                onPress={handleClose}
+                name={'close'}
+                size={30}
+              />
+            </ThemedView>
+
+            <ColorPicker
+              color={form.color}
+              onColorChangeComplete={changeColor}
+              // onColorChangeComplete={setColor}
+              thumbSize={30}
+              sliderSize={30}
+              noSnap={true}
+              row={false}
+            />
+
+            <ThemedButton
+              darkColor={LOGO_THEME_COLOR}
+              title="confirm"
+              onPress={() => setShowModal(false)}
+            />
+          </ThemedView>
+        </Modal>
+
         <ThemedView
           darkColor={MODAL_BG}
           style={[styles.bottomSheet, {height: windowHeight * 0.53}]}>
@@ -99,6 +126,18 @@ export default function BottomModal({
           <ThemedView
             darkColor={MODAL_BG}
             style={{display: 'flex', width: '100%', gap: 7}}>
+            <ThemedText type="subtitle2">Label</ThemedText>
+            <ThemedTextInput
+              darkBgColor={INPUT_BG}
+              editable
+              multiline
+              numberOfLines={4}
+              maxLength={255}
+              onChangeText={val => updateForm({name: 'label', value: val})}
+              value={form?.label}
+              style={styles.inputField}
+              textAlignVertical="top"
+            />
             <ThemedText type="subtitle2">Description</ThemedText>
             <ThemedTextInput
               darkBgColor={INPUT_BG}
@@ -113,40 +152,50 @@ export default function BottomModal({
               style={styles.inputField}
               textAlignVertical="top"
             />
-            <ThemedText type="subtitle2">Amount</ThemedText>
-            <ThemedTextInput
-              onChangeText={val => updateForm({name: 'amount', value: val})}
-              style={styles.inputField}
-              value={form?.amount}
-              keyboardType="numeric"
-            />
+            <ThemedText type="subtitle2">Color</ThemedText>
             <ThemedView
               style={{
-                display: 'flex',
-                width: '100%',
-                gap: 10,
                 backgroundColor: 'transparent',
+                flexDirection: 'row',
+                gap: 10,
+                alignItems: 'center',
               }}>
-              <ThemedText type="subtitle2">Category</ThemedText>
+              <ThemedView
+                style={{
+                  backgroundColor: form.color,
+                  width: 30,
+                  height: 30,
+                  borderRadius: 100,
+                }}
+              />
+              <TouchableOpacity
+                style={{
+                  width: '50%',
+                }}
+                onPress={() => setShowModal(true)}>
+                <ThemedView
+                  style={{
+                    ...styles.inputField,
+                    backgroundColor: INPUT_BG,
+                    height: 40,
+                    borderRadius: 5,
+                  }}>
+                  <ThemedText>{form.color}</ThemedText>
+                </ThemedView>
+              </TouchableOpacity>
 
-              <Dropdown
-                value={form?.categoryId}
-                options={dropDownOpt}
-                onSelect={handleSelect}
-              />
-            </ThemedView>
-            <ThemedView
-              style={{
-                display: 'flex',
-                width: '100%',
-                gap: 10,
-                backgroundColor: 'transparent',
-              }}>
-              <ThemedText type="subtitle2">Pay Date</ThemedText>
-              <InputDatePicker
-                date={form?.payDate}
-                onSelect={handleSelectData}
-              />
+              {/* <ThemedTextInput
+                darkBgColor={INPUT_BG}
+                editable
+                multiline
+                numberOfLines={4}
+                maxLength={255}
+                onChangeText={val => updateForm({name: 'color', value: val})}
+                value={form?.color}
+                style={styles.inputField}
+                textAlignVertical="top"
+              /> */}
+              {/* <ThemedButton title="select" onPress={() => setShowModal(true)} /> */}
             </ThemedView>
           </ThemedView>
 
@@ -205,5 +254,27 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)', // 👈 semi-transparent dark background
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  swatchesContainer: {
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+    gap: 10,
+  },
+  swatchStyle: {
+    borderRadius: 20,
+    height: 30,
+    width: 30,
+    margin: 0,
+    marginBottom: 0,
+    marginHorizontal: 0,
+    marginVertical: 0,
+  },
+  previewStyle: {
+    height: 40,
+    borderRadius: 14,
+  },
+  previewTxt: {
+    color: '#707070',
+    fontFamily: 'Quicksand',
   },
 });

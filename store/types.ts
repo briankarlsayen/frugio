@@ -25,6 +25,7 @@ export interface GlobalState {
   expenses: Expense[];
   categories: Category[];
   selectedExpenseId?: number;
+  selectedCategoryId?: number;
 }
 
 export type GlobalAction =
@@ -37,4 +38,5 @@ export interface GlobalContextType {
   updateCategories: (category: Category[] | null) => void;
   updateExpenses: (expense: Expense[] | null) => void;
   updateSelectedExpenseId: (id: number | null) => void;
+  getCategories: () => Promise<void>;
 }

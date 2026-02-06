@@ -51,3 +51,11 @@ npm run android
 ```
 npm run log
 ```
+
+#### Enchancements
+
+[ ] create categories page
+[ ] handle categories CRUD, can only archieve those that have no items
+[ ] when typing, inputs should be higher than keyboard
+[ ] then date should be global
+[ ] fix categories dropdown, missing items

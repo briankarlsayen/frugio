@@ -19,6 +19,7 @@ import {useColorScheme} from '@/hooks/useColorScheme';
 import {ThemedView} from './src/components/ThemedView';
 import LoadingScreen from './src/components/LoadingScreen';
 import ToastManager from 'toastify-react-native';
+import Categories from './src/pages/Categories';
 const Tab = createBottomTabNavigator();
 
 function App(): React.JSX.Element {
@@ -86,19 +87,20 @@ function App(): React.JSX.Element {
                   <Tab.Navigator
                     screenOptions={({route}) => ({
                       tabBarIcon: ({color, size}) => {
-                        let iconName = 'icon-name' as string;
                         if (route.name === 'Dashboard') {
-                          iconName = 'home';
                           return (
                             <Icon name="dashboard" color={color} size={24} />
                           );
                         } else if (route.name === 'Analytics') {
-                          iconName = 'bar-chart';
                           return (
                             <Icon name="equalizer" color={color} size={24} />
                           );
+                        } else if (route.name === 'Categories') {
+                          return (
+                            <Icon name="border-all" color={color} size={24} />
+                          );
                         }
-                        return <Text>haha</Text>;
+                        return <Icon name="settings" color={color} size={24} />;
                       },
                       tabBarActiveTintColor: isDarkMode ? 'white' : 'black',
                       tabBarInactiveTintColor: 'gray',
@@ -115,6 +117,11 @@ function App(): React.JSX.Element {
                     <Tab.Screen
                       name="Analytics"
                       component={Analytics}
+                      options={{headerShown: false}}
+                    />
+                    <Tab.Screen
+                      name="Categories"
+                      component={Categories}
                       options={{headerShown: false}}
                     />
                   </Tab.Navigator>

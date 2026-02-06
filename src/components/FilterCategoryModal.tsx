@@ -6,7 +6,7 @@ import Modal from 'react-native-modal';
 import {GlobalContext} from '@/store/globalProvider';
 import {Category, GlobalContextType} from '@/store/types';
 import ThemedHr from './ThemedHr';
-import {getAllCategories, updateCategory} from '@/api';
+import {getAllCategories, updateCategoryChecked} from '@/api';
 import CustomIconButton from './CustomIconButton';
 
 const FilterCategoryModal = ({open, handleClose, handleRefresh, payCount}) => {
@@ -14,7 +14,7 @@ const FilterCategoryModal = ({open, handleClose, handleRefresh, payCount}) => {
   const {state, updateCategories} = context as GlobalContextType;
 
   const updateCheckedCategory = async ({id, isChecked}) => {
-    await updateCategory({id, isChecked: !isChecked});
+    await updateCategoryChecked({id, isChecked: !isChecked});
 
     const fetchCategories = await getAllCategories();
     updateCategories(fetchCategories?.data);

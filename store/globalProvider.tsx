@@ -6,12 +6,14 @@ import {
   Category,
   Expense,
 } from './types.ts';
+import {getAllCategories} from '@/api/index.ts';
 
 // Initial state
 const initialState: GlobalState = {
   expenses: [],
   categories: [],
   selectedExpenseId: null,
+  selectedCategoryId: null,
 };
 
 // Reducer function
@@ -62,6 +64,12 @@ export const GlobalProvider = ({children}: GlobalProviderProps) => {
     dispatch({type: 'SET_SELECTED_EXPENSE_ID', payload: id});
   };
 
+  const getCategories = async () => {
+    // const categories = []
+    const categories = await getAllCategories();
+    dispatch({type: 'SET_CATEGORIES', payload: categories?.data ?? []});
+  };
+
   return (
     <GlobalContext.Provider
       value={{
@@ -69,6 +77,7 @@ export const GlobalProvider = ({children}: GlobalProviderProps) => {
         updateCategories,
         updateExpenses,
         updateSelectedExpenseId,
+        getCategories,
       }}>
       {children}
     </GlobalContext.Provider>

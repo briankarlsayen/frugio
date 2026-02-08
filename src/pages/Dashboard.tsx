@@ -7,8 +7,8 @@ import {
   archiveExpense,
   createExpense,
   getAllCategories,
+  getAllExpenses,
   getExpenseById,
-  getExpenses,
   updateExpense,
 } from '../../api';
 import {
@@ -40,8 +40,13 @@ export interface IUpdateField {
 export default function Dashboard() {
   const windowHeight = Dimensions.get('window').height;
   const context = useContext(GlobalContext);
-  const {state, updateCategories, updateExpenses, updateSelectedExpenseId} =
-    context as GlobalContextType;
+  const {
+    state,
+    updateCategories,
+    updateExpenses,
+    updateSelectedExpenseId,
+    updateDateFilter,
+  } = context as GlobalContextType;
 
   const sampleExpenses = state.expenses;
   const selectedId = state?.selectedExpenseId;
@@ -55,9 +60,7 @@ export default function Dashboard() {
     payDate: new Date(),
     description: '',
   });
-  const [dateFilter, setDateFilter] = useState<any | null>(3);
   const [totalExpenses, setTotalExpenses] = useState<string>('');
-  const [dateRange, setDateRange] = useState(null);
 
   const handleClose = () => {
     clearForm();
@@ -148,8 +151,7 @@ export default function Dashboard() {
   };
 
   const handleDateFilter = (val: string, dates: any) => {
-    if (dates) setDateRange(dates);
-    setDateFilter(val);
+    updateDateFilter(val, dates);
     setCb(!cb);
   };
 
@@ -180,8 +182,11 @@ export default function Dashboard() {
   };
 
   const fetchExpenses = async () => {
-    const {from, to} = filteredExpenses({dateFilter, dateRange});
-    const res = await getExpenses({from, to});
+    const {from, to} = filteredExpenses({
+      dateFilter: state.dateFilter,
+      dateRange: state.dateRange,
+    });
+    const res = await getAllExpenses({from, to});
 
     const total = res?.data?.reduce((sum, item) => sum + item.amount, 0);
 
@@ -211,7 +216,10 @@ export default function Dashboard() {
       <ThemedView style={styles.transHeadline}>
         <ThemedText type="defaultSemiBold">Transactions</ThemedText>
         <ThemedView>
-          <TransactionMenu value={dateFilter} handleSelect={handleDateFilter} />
+          <TransactionMenu
+            value={state.dateFilter}
+            handleSelect={handleDateFilter}
+          />
         </ThemedView>
       </ThemedView>
       <ThemedView style={styles.recentContainer}>

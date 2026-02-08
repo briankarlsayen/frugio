@@ -54,8 +54,10 @@ npm run log
 
 #### Enchancements
 
-[ ] create categories page
-[ ] handle categories CRUD, can only archieve those that have no items
-[ ] when typing, inputs should be higher than keyboard
-[ ] then date should be global
-[ ] fix categories dropdown, missing items
+[x] create categories page
+[x] handle categories CRUD, can only archieve those that have no items
+[x] when typing, inputs should be higher than keyboard
+[x] then date should be global
+[x] fix categories dropdown, missing items
+[x] clean up
+[ ] build/install

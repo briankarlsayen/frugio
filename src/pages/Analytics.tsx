@@ -5,7 +5,7 @@ import ExpenseCategoryCard from '../components/ExpenseCategoryCard';
 import TransactionMenu from '../components/TransactionMenu';
 import {useContext, useEffect, useState} from 'react';
 import {filteredExpenses} from '@/utils';
-import {getExpenses} from '@/api';
+import {getAllExpenses} from '@/api';
 import {ThemedView} from '../components/ThemedView';
 import {ThemedText} from '../components/ThemedText';
 import {GlobalContext} from '@/store/globalProvider';
@@ -24,17 +24,17 @@ interface IList {
 
 export default function Analytics() {
   const context = useContext(GlobalContext);
-  const {state} = context as GlobalContextType;
+  const {state, updateDateFilter, updateExpenses} =
+    context as GlobalContextType;
   const [cb, setCb] = useState(false);
 
   const [transList, setTransList] = useState([]);
   const [openFilter, setOpenFilter] = useState(false);
   const [payCount, setPayCount] = useState([]);
-  const [dateRange, setDateRange] = useState(null);
 
   const processList = (list: any) => {
     const transactionLists: IList[] = [];
-    list?.map((i, index) => {
+    list?.map(i => {
       const d = transactionLists.findIndex(
         item => item?.categoryId === i?.category_id,
       );
@@ -78,8 +78,12 @@ export default function Analytics() {
   };
 
   const fetchExpenses = async () => {
-    const {from, to} = filteredExpenses({dateFilter, dateRange});
-    const res = await getExpenses({from, to});
+    const {from, to} = filteredExpenses({
+      dateFilter: state.dateFilter,
+      dateRange: state.dateRange,
+    });
+    const res = await getAllExpenses({from, to});
+    updateExpenses(res?.data);
 
     processList(res?.data);
   };
@@ -92,10 +96,8 @@ export default function Analytics() {
     setCb(!cb);
   };
 
-  const [dateFilter, setDateFilter] = useState<any | null>(3);
   const handleDateFilter = (val: string, dates: any) => {
-    setDateRange(dates);
-    setDateFilter(val);
+    updateDateFilter(val, dates);
     setCb(!cb);
   };
 
@@ -153,7 +155,7 @@ export default function Analytics() {
             </ThemedView>
             <ThemedView>
               <TransactionMenu
-                value={dateFilter}
+                value={state.dateFilter}
                 handleSelect={handleDateFilter}
               />
             </ThemedView>

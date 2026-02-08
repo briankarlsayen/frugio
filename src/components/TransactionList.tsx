@@ -26,7 +26,7 @@ export default function TransactionList({list, handleShowEdit}) {
   const processList = () => {
     const transactionLists = [];
     // if (!list?.length) return;
-    list?.map((i, index) => {
+    list?.map(i => {
       const d = transactionLists.findIndex(item => item?.date === i?.pay_date);
       if (d > -1) {
         transactionLists[d]?.list?.push(i);

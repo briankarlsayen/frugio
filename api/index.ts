@@ -13,15 +13,11 @@ const getApi = async (script: string, params?: any[]): Promise<any[]> => {
 };
 
 const postApi = async (script: string, params: any[]) => {
-  return await executeSqlAsync(db, script, params).then(res => {
-    // console.log('res', res);
-  });
+  return await executeSqlAsync(db, script, params).then(res => {});
 };
 
 const putApi = async (script: string, params: any[]) => {
-  return await executeSqlAsync(db, script, params).then(res => {
-    // console.log('res', res);
-  });
+  return await executeSqlAsync(db, script, params).then(res => {});
 };
 
 interface DefaultApiResponse {
@@ -65,7 +61,7 @@ interface IGetExpensesProps {
 
 export const getAllCategories = async (): Promise<IGetAllCategories> => {
   try {
-    const res = await getApi(`SELECT * FROM categories`);
+    const res = await getApi(`SELECT * FROM categories where is_active = 1`);
     return {
       success: true,
       data: res,
@@ -84,13 +80,11 @@ export const createCategory = async ({
   color,
 }: ICreateCategoryProps): Promise<DefaultApiResponse> => {
   try {
-    const res = await postApi(
+    await postApi(
       'INSERT INTO categories (label, description, color) VALUES (?, ?, ?)',
       [label, description, color],
     );
-    console.log('res', res);
     return {
-      // data,
       success: true,
     };
   } catch (error) {
@@ -108,13 +102,29 @@ export const updateCategory = async ({
   color,
 }: IUpdateCategoryProps): Promise<IDefaultResponse> => {
   try {
-    const res = await putApi(
+    await putApi(
       'UPDATE categories SET label = ?, description = ?, color = ? WHERE id = ?',
       [label, description, color, id],
     );
-    // console.log('res', res);
     return {
-      // data,
+      success: true,
+    };
+  } catch (error) {
+    return {
+      success: true,
+      error,
+    };
+  }
+};
+
+export const getCategoryById = async (
+  id: number,
+): Promise<IDefaultResponse> => {
+  try {
+    const data = await getApi(`SELECT * FROM categories WHERE id = ?`, [id]);
+
+    return {
+      data,
       success: true,
     };
   } catch (error) {
@@ -128,32 +138,18 @@ export const updateCategory = async ({
 export const archiveCategory = async (
   id: number,
 ): Promise<IDefaultResponse> => {
-  try {
-    // check if category has expenses using it
-    const expenses = await getApi(
-      `SELECT * FROM expenses WHERE category_id = ?`,
-      [id],
-    );
-    console.log('expenses', expenses);
-    if (expenses.length) {
-      throw new Error('Category is being used');
-    }
-    const res = await putApi(
-      'UPDATE categories SET is_active = 0 WHERE id = ?',
-      [id],
-    );
-    // console.log('res', res);
-    return {
-      // data,
-      success: true,
-    };
-  } catch (error) {
-    return {
-      success: true,
-      error,
-    };
+  // check expenses if category is being used
+  const expenses = await getApi(
+    `SELECT * FROM expenses WHERE category_id = ? and is_active = 1`,
+    [id],
+  );
+  if (expenses.length) {
+    throw new Error('Category is being used');
   }
-  return;
+  await putApi('UPDATE categories SET is_active = 0 WHERE id = ?', [id]);
+  return {
+    success: true,
+  };
 };
 
 export const createExpense = async ({
@@ -180,10 +176,10 @@ export const createExpense = async ({
   }
 };
 
-export const getExpenses = async ({
+export const getAllExpenses = async ({
   from,
   to,
-}: IGetExpensesProps | undefined): Promise<IDefaultResponse> => {
+}: IGetExpensesProps | null | undefined): Promise<IDefaultResponse> => {
   try {
     let data = [];
     if (from && to) {

@@ -1,15 +1,19 @@
-import {View, Text, StyleSheet, ScrollView, Dimensions} from 'react-native';
+import {StyleSheet, ScrollView, Dimensions} from 'react-native';
 import React, {useContext, useState} from 'react';
 import {ThemedView} from '../components/ThemedView';
 import {ThemedText} from '../components/ThemedText';
 import CategoryList from '../components/CategoryList';
 import CustomIconButton from '../components/CustomIconButton';
 import {LOGO_THEME_COLOR} from '@/hooks/useThemeColor';
-import BottomModal from '../components/BottomModal';
 import {checkFormVal} from '../utils';
 import {Toast} from 'toastify-react-native';
 import CategoryModal from '../components/CategoryModal';
-import {createCategory, updateCategory} from '@/api';
+import {
+  archiveCategory,
+  createCategory,
+  getCategoryById,
+  updateCategory,
+} from '@/api';
 import {GlobalContextType} from '@/store/types';
 import {GlobalContext} from '@/store/globalProvider';
 
@@ -24,18 +28,25 @@ export interface IUpdateField {
   value?: string;
 }
 
+export function randomHexColor(): string {
+  return `#${Math.floor(Math.random() * 0xffffff)
+    .toString(16)
+    .padStart(6, '0')}`;
+}
+
 export default function Categories() {
   const windowHeight = Dimensions.get('window').height;
   const context = useContext(GlobalContext);
-  const {state, getCategories} = context as GlobalContextType;
-  const selectedId = state?.selectedExpenseId;
+  const {state, getCategories, updateSelectedCategoryId} =
+    context as GlobalContextType;
+  const selectedId = state?.selectedCategoryId;
 
   const [modalType, setModalType] = useState<'add' | 'edit'>('add');
   const [open, setOpen] = useState(false);
   const [categoryForm, setCategoryForm] = useState<ICategoryForm>({
     description: '',
     label: '',
-    color: '#00ff00',
+    color: randomHexColor(),
   });
 
   const handleOpen = () => {
@@ -50,7 +61,7 @@ export default function Categories() {
     setCategoryForm({
       description: '',
       label: '',
-      color: '',
+      color: randomHexColor(),
     });
   };
 
@@ -85,14 +96,14 @@ export default function Categories() {
   };
 
   const handleDelete = async () => {
-    // try {
-    //   await archiveExpense(selectedId);
-    //   Toast.success('Successfully deleted');
-    // } catch (error) {
-    //   Toast.error('Ooops something went wrong');
-    // }
-    // setCb(!cb);
-    await getCategories();
+    try {
+      await archiveCategory(selectedId);
+      Toast.success('Successfully deleted');
+      await getCategories();
+    } catch (error) {
+      Toast.error(error.message ?? 'Ooops something went wrong');
+    }
+
     handleClose();
     clearForm();
   };
@@ -106,13 +117,30 @@ export default function Categories() {
     });
   };
 
+  const handleShowEdit = async (id: number) => {
+    try {
+      const categoryDetails = await getCategoryById(id);
+      const categoryData = categoryDetails?.data[0];
+      if (!categoryData) return;
+      setCategoryForm({
+        ...categoryData,
+      });
+      updateSelectedCategoryId(id);
+    } catch (error) {
+      Toast.error('Something went wrong');
+    }
+
+    setModalType('edit');
+    setOpen(true);
+  };
+
   return (
     <ThemedView style={styles.container}>
       <ThemedText type="title" style={{paddingBottom: 15}}>
         Categories
       </ThemedText>
       <ScrollView contentContainerStyle={{paddingBottom: 15}}>
-        <CategoryList />
+        <CategoryList handleShowEdit={handleShowEdit} />
       </ScrollView>
       <ThemedView style={styles.addButtonView}>
         <CustomIconButton

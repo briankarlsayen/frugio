@@ -1,12 +1,6 @@
 import React, {createContext, useReducer, ReactNode} from 'react';
-import {
-  GlobalState,
-  GlobalAction,
-  GlobalContextType,
-  Category,
-  Expense,
-} from './types.ts';
-import {getAllCategories} from '@/api/index.ts';
+import {GlobalState, GlobalContextType, Category, Expense} from './types.ts';
+import {getAllCategories, getAllExpenses} from '@/api/index.ts';
 
 // Initial state
 const initialState: GlobalState = {
@@ -14,6 +8,9 @@ const initialState: GlobalState = {
   categories: [],
   selectedExpenseId: null,
   selectedCategoryId: null,
+  totalExpenses: 0,
+  dateFilter: 3,
+  dateRange: null,
 };
 
 // Reducer function
@@ -33,6 +30,17 @@ const globalReducer = (state: GlobalState, action: any): GlobalState => {
       return {
         ...state,
         selectedExpenseId: action.payload,
+      };
+    case 'SET_SELECTED_CATEGORY_ID':
+      return {
+        ...state,
+        selectedCategoryId: action.payload,
+      };
+    case 'SET_DATE_FILTER':
+      return {
+        ...state,
+        dateFilter: action.payload.dateFilter,
+        dateRange: action.payload.dateRange,
       };
 
     default:
@@ -65,9 +73,24 @@ export const GlobalProvider = ({children}: GlobalProviderProps) => {
   };
 
   const getCategories = async () => {
-    // const categories = []
     const categories = await getAllCategories();
     dispatch({type: 'SET_CATEGORIES', payload: categories?.data ?? []});
+  };
+
+  const getExpenses = async () => {
+    const categories = await getAllExpenses(undefined);
+    dispatch({type: 'SET_EXPENSES', payload: categories?.data ?? []});
+  };
+
+  const updateSelectedCategoryId = (id: number | null) => {
+    dispatch({type: 'SET_SELECTED_CATEGORY_ID', payload: id});
+  };
+
+  const updateDateFilter = (dateFilter: string, dateRange: any) => {
+    dispatch({
+      type: 'SET_DATE_FILTER',
+      payload: {dateFilter, ...(dateRange !== undefined && {dateRange})},
+    });
   };
 
   return (
@@ -78,6 +101,9 @@ export const GlobalProvider = ({children}: GlobalProviderProps) => {
         updateExpenses,
         updateSelectedExpenseId,
         getCategories,
+        updateSelectedCategoryId,
+        getExpenses,
+        updateDateFilter,
       }}>
       {children}
     </GlobalContext.Provider>

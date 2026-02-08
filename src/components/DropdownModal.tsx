@@ -31,7 +31,7 @@ const Dropdown = ({value, options, onSelect}: IDropdown) => {
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
     Animated.timing(animatedHeight, {
-      toValue: isOpen ? 0 : options.length * 40,
+      toValue: isOpen ? 0 : options.length * 45,
       duration: 300,
       useNativeDriver: false,
     }).start();
@@ -68,7 +68,7 @@ const Dropdown = ({value, options, onSelect}: IDropdown) => {
         {isOpen && (
           <ScrollView
             contentContainerStyle={{
-              paddingBottom: 600,
+              paddingBottom: 650,
             }}>
             <ThemedView
               darkColor={MODAL_BG}
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    width: 300,
+    width: 315,
     overflow: 'hidden',
   },
   header: {

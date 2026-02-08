@@ -26,6 +26,9 @@ export interface GlobalState {
   categories: Category[];
   selectedExpenseId?: number;
   selectedCategoryId?: number;
+  totalExpenses: number;
+  dateRange: any;
+  dateFilter: any;
 }
 
 export type GlobalAction =
@@ -39,4 +42,7 @@ export interface GlobalContextType {
   updateExpenses: (expense: Expense[] | null) => void;
   updateSelectedExpenseId: (id: number | null) => void;
   getCategories: () => Promise<void>;
+  updateSelectedCategoryId: (id: number | null) => void;
+  getExpenses: () => Promise<void>;
+  updateDateFilter: (dateFilter: string, dateRange: any) => void;
 }

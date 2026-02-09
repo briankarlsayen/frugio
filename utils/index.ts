@@ -45,7 +45,6 @@ export const formatedAmount = (amount: number): string => {
 export const convertToReadableDate = dateString => {
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', {
-    // year: "numeric",
     month: 'long',
     day: 'numeric',
   });
@@ -72,13 +71,8 @@ export const filteredExpenses = ({
   const localThisMonth = convertUTCtoLocalDate(thisMonth);
   const localThisYear = convertUTCtoLocalDate(thisYear);
 
-  console.log('dateRange', dateRange);
-
   const localStartDate = convertUTCtoLocalDate(dateRange?.startDate);
   const localEndDate = convertUTCtoLocalDate(dateRange?.endDate);
-
-  console.log('localStartDate', localStartDate);
-  console.log('localEndDate', localEndDate);
 
   let from = null;
   let to = null;

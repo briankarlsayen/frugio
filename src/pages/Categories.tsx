@@ -90,7 +90,6 @@ export default function Categories() {
     } catch (error) {
       Toast.error('Ooops something went wrong');
     }
-    // setCb(!cb);
     handleClose();
     clearForm();
   };
@@ -136,10 +135,14 @@ export default function Categories() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText type="title" style={{paddingBottom: 15}}>
-        Categories
+      <ThemedText
+        type="defaultSemiBold"
+        style={{paddingBottom: 15, paddingTop: 15}}>
+        Transactions
       </ThemedText>
-      <ScrollView contentContainerStyle={{paddingBottom: 15}}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{paddingBottom: 15}}>
         <CategoryList handleShowEdit={handleShowEdit} />
       </ScrollView>
       <ThemedView style={styles.addButtonView}>

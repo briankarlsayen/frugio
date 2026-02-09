@@ -67,6 +67,7 @@ const Dropdown = ({value, options, onSelect}: IDropdown) => {
         </TouchableOpacity>
         {isOpen && (
           <ScrollView
+            showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               paddingBottom: 650,
             }}>
@@ -74,7 +75,6 @@ const Dropdown = ({value, options, onSelect}: IDropdown) => {
               darkColor={MODAL_BG}
               style={{backgroundColor: INPUT_BG}}>
               <ThemedTextInput
-                // darkBgColor={INPUT_BG}
                 style={styles.searchInput}
                 placeholder="Search..."
                 value={search}
@@ -123,13 +123,9 @@ const styles = StyleSheet.create({
   },
   header: {
     padding: 10,
-    // backgroundColor: INPUT_BG,
   },
   headerText: {
     fontSize: 16,
-  },
-  dropdownContainer: {
-    // backgroundColor: INPUT_BG,
   },
   searchInput: {
     padding: 10,

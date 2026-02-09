@@ -3,7 +3,6 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   Modal,
-  Platform,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
@@ -100,7 +99,6 @@ export default function CategoryModal({
               <ColorPicker
                 color={form.color}
                 onColorChangeComplete={changeColor}
-                // onColorChangeComplete={setColor}
                 thumbSize={30}
                 sliderSize={30}
                 noSnap={true}
@@ -200,19 +198,6 @@ export default function CategoryModal({
                     <ThemedText>{form.color}</ThemedText>
                   </ThemedView>
                 </TouchableOpacity>
-
-                {/* <ThemedTextInput
-                darkBgColor={INPUT_BG}
-                editable
-                multiline
-                numberOfLines={4}
-                maxLength={255}
-                onChangeText={val => updateForm({name: 'color', value: val})}
-                value={form?.color}
-                style={styles.inputField}
-                textAlignVertical="top"
-              /> */}
-                {/* <ThemedButton title="select" onPress={() => setShowModal(true)} /> */}
               </ThemedView>
             </ThemedView>
 

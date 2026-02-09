@@ -60,4 +60,4 @@ npm run log
 [x] then date should be global
 [x] fix categories dropdown, missing items
 [x] clean up
-[ ] build/install
+[x] build/install

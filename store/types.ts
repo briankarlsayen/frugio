@@ -43,6 +43,6 @@ export interface GlobalContextType {
   updateSelectedExpenseId: (id: number | null) => void;
   getCategories: () => Promise<void>;
   updateSelectedCategoryId: (id: number | null) => void;
-  getExpenses: () => Promise<void>;
+  getExpenses: () => Promise<any>;
   updateDateFilter: (dateFilter: string, dateRange: any) => void;
 }

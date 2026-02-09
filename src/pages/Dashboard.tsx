@@ -7,16 +7,10 @@ import {
   archiveExpense,
   createExpense,
   getAllCategories,
-  getAllExpenses,
   getExpenseById,
   updateExpense,
 } from '../../api';
-import {
-  convertLocalDateToUTC,
-  convertUTCtoLocalDate,
-  filteredExpenses,
-  formatedAmount,
-} from '../../utils';
+import {convertLocalDateToUTC, convertUTCtoLocalDate} from '../../utils';
 import {ThemedView} from '../components/ThemedView';
 import {ThemedText} from '../components/ThemedText';
 import TransactionMenu from '../components/TransactionMenu';
@@ -43,9 +37,9 @@ export default function Dashboard() {
   const {
     state,
     updateCategories,
-    updateExpenses,
     updateSelectedExpenseId,
     updateDateFilter,
+    getExpenses,
   } = context as GlobalContextType;
 
   const sampleExpenses = state.expenses;
@@ -60,7 +54,6 @@ export default function Dashboard() {
     payDate: new Date(),
     description: '',
   });
-  const [totalExpenses, setTotalExpenses] = useState<string>('');
 
   const handleClose = () => {
     clearForm();
@@ -182,17 +175,7 @@ export default function Dashboard() {
   };
 
   const fetchExpenses = async () => {
-    const {from, to} = filteredExpenses({
-      dateFilter: state.dateFilter,
-      dateRange: state.dateRange,
-    });
-    const res = await getAllExpenses({from, to});
-
-    const total = res?.data?.reduce((sum, item) => sum + item.amount, 0);
-
-    setTotalExpenses(formatedAmount(total));
-
-    updateExpenses(res?.data);
+    getExpenses();
   };
 
   useEffect(() => {
@@ -210,7 +193,7 @@ export default function Dashboard() {
         lightColor="gray"
         style={styles.expenseSummary}>
         <ThemedText style={{fontSize: 42, lineHeight: 42}}>
-          {totalExpenses}
+          {state.totalExpenses}
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.transHeadline}>
@@ -223,7 +206,9 @@ export default function Dashboard() {
         </ThemedView>
       </ThemedView>
       <ThemedView style={styles.recentContainer}>
-        <ScrollView contentContainerStyle={{paddingBottom: 100}}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{paddingBottom: 100}}>
           <TransactionList
             list={sampleExpenses}
             handleShowEdit={handleShowEdit}
@@ -240,7 +225,6 @@ export default function Dashboard() {
       </ThemedView>
       {open && (
         <BottomModal
-          name="dashboard"
           open={open}
           handleClose={handleClose}
           windowHeight={windowHeight}
@@ -259,7 +243,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     height: '100%',
-    paddingBottom: 250,
+    paddingBottom: 120,
     position: 'relative',
     fontFamily: 'OpenSans',
   },

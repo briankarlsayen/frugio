@@ -4,8 +4,6 @@ import CustomPieChart from '../components/CustomPieChart';
 import ExpenseCategoryCard from '../components/ExpenseCategoryCard';
 import TransactionMenu from '../components/TransactionMenu';
 import {useContext, useEffect, useState} from 'react';
-import {filteredExpenses} from '@/utils';
-import {getAllExpenses} from '@/api';
 import {ThemedView} from '../components/ThemedView';
 import {ThemedText} from '../components/ThemedText';
 import {GlobalContext} from '@/store/globalProvider';
@@ -24,8 +22,7 @@ interface IList {
 
 export default function Analytics() {
   const context = useContext(GlobalContext);
-  const {state, updateDateFilter, updateExpenses} =
-    context as GlobalContextType;
+  const {state, updateDateFilter, getExpenses} = context as GlobalContextType;
   const [cb, setCb] = useState(false);
 
   const [transList, setTransList] = useState([]);
@@ -78,14 +75,8 @@ export default function Analytics() {
   };
 
   const fetchExpenses = async () => {
-    const {from, to} = filteredExpenses({
-      dateFilter: state.dateFilter,
-      dateRange: state.dateRange,
-    });
-    const res = await getAllExpenses({from, to});
-    updateExpenses(res?.data);
-
-    processList(res?.data);
+    const expenses = await getExpenses();
+    processList(expenses);
   };
 
   useEffect(() => {
@@ -165,8 +156,9 @@ export default function Analytics() {
 
       <ThemedView style={styles.recentContainer}>
         <ScrollView
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={{
-            paddingBottom: 100,
+            paddingBottom: 150,
           }}>
           {transList.map((item, index) => {
             return (
@@ -190,7 +182,7 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     height: '100%',
-    paddingBottom: 250,
+    paddingBottom: 260,
     position: 'relative',
     paddingTop: 42,
   },

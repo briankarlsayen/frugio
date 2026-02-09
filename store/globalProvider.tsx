@@ -1,6 +1,7 @@
 import React, {createContext, useReducer, ReactNode} from 'react';
 import {GlobalState, GlobalContextType, Category, Expense} from './types.ts';
 import {getAllCategories, getAllExpenses} from '@/api/index.ts';
+import {filteredExpenses, formatedAmount} from '@/utils/index.ts';
 
 // Initial state
 const initialState: GlobalState = {
@@ -42,6 +43,11 @@ const globalReducer = (state: GlobalState, action: any): GlobalState => {
         dateFilter: action.payload.dateFilter,
         dateRange: action.payload.dateRange,
       };
+    case 'SET_TOTAL_EXPENSES':
+      return {
+        ...state,
+        totalExpenses: action.payload,
+      };
 
     default:
       return state;
@@ -66,7 +72,10 @@ export const GlobalProvider = ({children}: GlobalProviderProps) => {
     dispatch({type: 'SET_CATEGORIES', payload: category});
   };
   const updateExpenses = (expense: Expense[] | null) => {
+    const rawTotal = expense?.reduce((sum, item) => sum + item.amount, 0);
+    const total = formatedAmount(rawTotal);
     dispatch({type: 'SET_EXPENSES', payload: expense});
+    dispatch({type: 'SET_TOTAL_EXPENSES', payload: total ?? 0});
   };
   const updateSelectedExpenseId = (id: number | null) => {
     dispatch({type: 'SET_SELECTED_EXPENSE_ID', payload: id});
@@ -78,8 +87,20 @@ export const GlobalProvider = ({children}: GlobalProviderProps) => {
   };
 
   const getExpenses = async () => {
-    const categories = await getAllExpenses(undefined);
+    const {from, to} = filteredExpenses({
+      dateFilter: state.dateFilter,
+      dateRange: state.dateRange,
+    });
+    const categories = await getAllExpenses({from, to});
+    const rawTotal = categories?.data?.reduce(
+      (sum, item) => sum + item.amount,
+      0,
+    );
+    const total = formatedAmount(rawTotal);
+
     dispatch({type: 'SET_EXPENSES', payload: categories?.data ?? []});
+    dispatch({type: 'SET_TOTAL_EXPENSES', payload: total ?? 0});
+    return categories?.data;
   };
 
   const updateSelectedCategoryId = (id: number | null) => {

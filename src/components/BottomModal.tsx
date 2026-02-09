@@ -1,12 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Modal,
-  Platform,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
+import {Keyboard, KeyboardAvoidingView, Modal, StyleSheet} from 'react-native';
 import {ThemedText} from './ThemedText';
 import {ThemedView} from './ThemedView';
 import {ThemedTextInput} from './ThemedTextInput';
@@ -24,7 +17,6 @@ const MODAL_BG = '#201F1E';
 const INPUT_BG = DARK_INPUT_BG;
 
 interface IBottomModal {
-  name: string;
   open: boolean;
   handleClose: () => void;
   windowHeight: number;
@@ -36,7 +28,6 @@ interface IBottomModal {
 }
 
 export default function BottomModal({
-  name,
   open,
   handleClose,
   windowHeight,

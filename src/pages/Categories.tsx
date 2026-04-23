@@ -135,14 +135,12 @@ export default function Categories() {
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText
-        type="defaultSemiBold"
-        style={{paddingBottom: 15, paddingTop: 15}}>
-        Transactions
+      <ThemedText type="defaultSemiBold" style={styles.pageHeaderText}>
+        Categories
       </ThemedText>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 15}}>
+        contentContainerStyle={styles.categoryListContainer}>
         <CategoryList handleShowEdit={handleShowEdit} />
       </ScrollView>
       <ThemedView style={styles.addButtonView}>
@@ -177,9 +175,12 @@ const styles = StyleSheet.create({
     height: '100%',
     position: 'relative',
     fontFamily: 'OpenSans',
-    paddingTop: 40,
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingTop: 50,
+  },
+  pageHeaderText: {
+    paddingTop: 13,
+    paddingBottom: 20,
+    paddingHorizontal: 15,
   },
   addButtonView: {
     backgroundColor: 'transparent',
@@ -196,5 +197,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     textAlign: 'center',
+  },
+  categoryListContainer: {
+    paddingHorizontal: 15,
+    paddingBottom: 15,
   },
 });

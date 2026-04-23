@@ -1,15 +1,13 @@
-import {View, Text, Modal, StyleSheet, Dimensions} from 'react-native';
+import {Modal, StyleSheet, Dimensions} from 'react-native';
 import React, {useState} from 'react';
 import {ThemedView} from './ThemedView';
 import {ThemedText} from './ThemedText';
 import CustomIconButton from './CustomIconButton';
-import {ThemedTextInput} from './ThemedTextInput';
-import {DARK_INPUT_BG, LOGO_THEME_COLOR} from '@/hooks/useThemeColor';
+import {LOGO_THEME_COLOR} from '@/hooks/useThemeColor';
 import InputDatePicker from './InputDatePicker';
 import ThemedHr from './ThemedHr';
 import {ThemedButton} from './ThemedButton';
-const MODAL_BG = '#201F1E';
-const INPUT_BG = DARK_INPUT_BG;
+import {MODAL_BG} from '@/constants/colors';
 
 const DateRangeModal = ({open, handleClose}) => {
   const windowHeight = Dimensions.get('window').height;

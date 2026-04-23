@@ -15,7 +15,7 @@ import ThemedHr from './ThemedHr';
 import CustomIconButton from './CustomIconButton';
 import {ICategoryForm, IUpdateField} from '../pages/Categories';
 import ColorPicker from 'react-native-wheel-color-picker';
-const MODAL_BG = '#201F1E';
+import {MODAL_BG} from '@/constants/colors';
 const INPUT_BG = DARK_INPUT_BG;
 
 interface IBottomModal {

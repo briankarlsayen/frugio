@@ -61,3 +61,8 @@ npm run log
 [x] fix categories dropdown, missing items
 [x] clean up
 [x] build/install
+[x] update dashboard filter
+--- [x] last 30 days, last 6 months, all
+[x] update transaction filter
+[x] update barchart filter
+[x] fix UI

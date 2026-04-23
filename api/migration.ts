@@ -4,7 +4,7 @@ export const DB_NAME = 'expense.db';
 
 // update when needed
 // lowest should be 1
-const DATABASE_VERSION = 13;
+const DATABASE_VERSION = 1;
 
 export const executeSqlAsync = (
   db: SQLiteDatabase,
@@ -40,8 +40,7 @@ const generateTables = async (db: SQLiteDatabase): Promise<void> => {
       color TEXT NOT NULL,
       description TEXT NULL,
       is_checked INTEGER NOT NULL DEFAULT 1,
-      is_active INTEGER NOT NULL DEFAULT 1,
-      is_checked INTEGER NOT NULL DEFAULT 1,
+      is_active INTEGER NOT NULL DEFAULT 1
       )`,
       `CREATE TABLE expenses (
       id INTEGER PRIMARY KEY,
@@ -113,6 +112,7 @@ const generateCategories = async (db: SQLiteDatabase): Promise<void> => {
     );
   } catch (error) {
     console.log('Error generateCategories: ', error);
+    throw error;
   }
 };
 
@@ -130,16 +130,6 @@ const updateDatabaseVersion = async (db: SQLiteDatabase) => {
   await executeSqlAsync(db, `PRAGMA user_version = ${DATABASE_VERSION};`);
 };
 
-const updateTable = async (db: SQLiteDatabase) => {
-  await executeSqlAsync(
-    db,
-    `
-    ALTER TABLE categories 
-    ADD COLUMN is_checked INTEGER NOT NULL DEFAULT 1;
-    `,
-  );
-};
-
 // return true | false
 export default async function migration(db: SQLiteDatabase): Promise<boolean> {
   try {
@@ -150,16 +140,15 @@ export default async function migration(db: SQLiteDatabase): Promise<boolean> {
       currentDbVersion < DATABASE_VERSION,
     );
 
-    if (currentDbVersion === DATABASE_VERSION) {
-      console.log('same db version');
-
-      return false; // no DB change needed
-    } else if (currentDbVersion <= 0) {
+    if (currentDbVersion <= 0) {
       await generateTables(db);
       await generateCategories(db);
+    } else if (currentDbVersion === DATABASE_VERSION) {
+      console.log('same db version');
+      return false; // no DB change needed
     } else if (currentDbVersion < DATABASE_VERSION) {
       console.log('migrate');
-      // updateTable(db);
+      // for needed schema change;
     } else {
       console.log('no change needed');
       return false;

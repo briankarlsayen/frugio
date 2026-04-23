@@ -55,8 +55,8 @@ interface IUpdateCategoryProps extends ICreateCategoryProps {
 }
 
 interface IGetExpensesProps {
-  from?: string | null;
-  to?: string | null;
+  from?: string | null; // YYYY-MM-DD
+  to?: string | null; // YYYY-MM-DD
 }
 
 export const getAllCategories = async (): Promise<IGetAllCategories> => {
@@ -176,11 +176,11 @@ export const createExpense = async ({
   }
 };
 
-export const getAllExpenses = async ({
-  from,
-  to,
-}: IGetExpensesProps | null | undefined): Promise<IDefaultResponse> => {
+export const getAllExpenses = async (
+  props: IGetExpensesProps | undefined,
+): Promise<IDefaultResponse> => {
   try {
+    const {from, to} = props || {};
     let data = [];
     if (from && to) {
       data = await getApi(
@@ -194,7 +194,6 @@ export const getAllExpenses = async ({
     }
 
     return {
-      // data: data.filter(i => i?.amount < 0),
       data,
       success: true,
     };
@@ -208,11 +207,6 @@ export const getAllExpenses = async ({
 
 export const getExpenseById = async (id: number): Promise<IDefaultResponse> => {
   try {
-    // const data = await db.getFirstAsync(
-    //   `SELECT expenses.*, categories.label as category FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE expenses.id = ?`,
-    //   id
-    // );
-
     const data = await getApi(
       `SELECT expenses.*, categories.label as category FROM expenses JOIN categories ON expenses.category_id=categories.id WHERE expenses.id = ?`,
       [id],
@@ -243,9 +237,7 @@ export const updateExpense = async ({
       'UPDATE expenses SET amount = ?, category_id = ?, description = ?, pay_date = ? WHERE id = ?',
       [amount, categoryId, description, payDate, id],
     );
-    // console.log('res', res);
     return {
-      // data,
       success: true,
     };
   } catch (error) {
@@ -261,9 +253,7 @@ export const archiveExpense = async (id: number): Promise<IDefaultResponse> => {
     const res = await putApi('UPDATE expenses SET is_active = 0 WHERE id = ?', [
       id,
     ]);
-    // console.log('res', res);
     return {
-      // data,
       success: true,
     };
   } catch (error) {

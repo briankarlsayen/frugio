@@ -6,9 +6,7 @@ import {ThemedText} from './ThemedText';
 import {ThemedTextInput} from './ThemedTextInput';
 import {useColorScheme} from '../../hooks/useColorScheme';
 import CustomIconButton from './CustomIconButton';
-
-// 353636
-const MODAL_BG = '#201F1E';
+import {MODAL_BG} from '@/constants/colors';
 
 interface IOption {
   label: string;

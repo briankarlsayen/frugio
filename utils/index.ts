@@ -66,6 +66,12 @@ export const filteredExpenses = ({
   thisYear.setMonth(0);
   thisYear.setDate(1);
 
+  const fourWeeksAgo = new Date(today);
+  fourWeeksAgo.setDate(today.getDate() - 28);
+
+  const sixMonthAgo = new Date(today);
+  sixMonthAgo.setMonth(today.getMonth() - 6);
+
   const localToday = convertUTCtoLocalDate(today);
   const localThisWeek = convertUTCtoLocalDate(thisWeek);
   const localThisMonth = convertUTCtoLocalDate(thisMonth);
@@ -73,6 +79,9 @@ export const filteredExpenses = ({
 
   const localStartDate = convertUTCtoLocalDate(dateRange?.startDate);
   const localEndDate = convertUTCtoLocalDate(dateRange?.endDate);
+
+  const lastFourWeeksAgo = convertUTCtoLocalDate(fourWeeksAgo);
+  const lastSixMonthAgo = convertUTCtoLocalDate(sixMonthAgo);
 
   let from = null;
   let to = null;
@@ -97,6 +106,19 @@ export const filteredExpenses = ({
     case 5:
       from = localStartDate;
       to = localEndDate;
+      break;
+    case 6: // last four weeks ago
+      from = lastFourWeeksAgo;
+      to = localToday;
+      break;
+    case 7: // last six months ago
+      from = lastSixMonthAgo;
+      to = localToday;
+      break;
+    case 8: // all
+      from = null;
+      to = null;
+      break;
   }
 
   return {

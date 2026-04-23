@@ -3,8 +3,8 @@ import PieChart from 'react-native-pie-chart';
 import {ThemedView} from './ThemedView';
 import {ThemedText} from './ThemedText';
 import {Dimensions, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
-import {formatedAmount} from '@/utils';
-import {useThemeColor} from '@/hooks/useThemeColor';
+import {TERTIARY_COLOR, useThemeColor} from '@/hooks/useThemeColor';
+import {BORDER_RADUIS} from '@/constants';
 
 interface IData {
   value: number;
@@ -16,50 +16,25 @@ interface IProps {
   data: IData[];
 }
 
-const {width} = Dimensions.get('window');
+const width = Dimensions.get('window').width - 40;
 
 export default function CustomPieChart({data}: IProps) {
-  const widthAndHeight = 200;
+  const widthAndHeight = 158;
   if (!data.length) return <></>;
 
-  const totalVal = data?.reduce(function (acc, obj) {
-    return acc + obj.value;
-  }, 0);
-
   return (
-    <ThemedView>
-      {/* Pie chart */}
-      <ThemedView
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'row',
-          width: '100%',
-          gap: 10,
-          justifyContent: 'center',
-          paddingBottom: 8,
-        }}>
-        <ThemedView style={{width: widthAndHeight}}>
+    <ThemedView
+      darkColor={TERTIARY_COLOR}
+      lightColor="gray"
+      style={styles.container}>
+      <ThemedView style={styles.chartContainer}>
+        <ThemedView
+          darkColor={TERTIARY_COLOR}
+          lightColor="gray"
+          style={{width: widthAndHeight, backgroundColor: 'transparent'}}>
           <PieChart widthAndHeight={widthAndHeight} series={data} />
         </ThemedView>
-        {/* <ThemedView style={{display: 'flex', gap: 8}}>
-          {data.map((item, index) => {
-            return (
-              <Legend
-                key={index}
-                color={item.color}
-                label={item?.name}
-                percentage={((item.value / totalVal) * 100).toFixed(2)}
-              />
-            );
-          })}
-        </ThemedView> */}
       </ThemedView>
-      <ThemedText
-        style={{textAlign: 'center', paddingVertical: 12}}
-        type="subtitle2">
-        Total: {formatedAmount(totalVal)}
-      </ThemedText>
       <PieChartLegend list={data} />
     </ThemedView>
   );
@@ -71,7 +46,6 @@ const PieChartLegend = ({list}) => {
 
   const iconDefaultColor = useThemeColor({}, 'tabIconDefault');
   const iconSelectColor = useThemeColor({}, 'tabIconSelected');
-  // console.log('color', color);
 
   const totalVal = list?.reduce(function (acc, obj) {
     return acc + obj.value;
@@ -110,10 +84,20 @@ const PieChartLegend = ({list}) => {
 
   const renderItem = ({item}: {item: any[]}) => {
     return (
-      <ThemedView style={styles.renderContainer}>
+      <ThemedView
+        darkColor={TERTIARY_COLOR}
+        lightColor="gray"
+        style={styles.renderContainer}>
         {item.map(re => (
-          <ThemedView key={re.name} style={styles.itemContainer}>
-            <ThemedView style={styles.page}>
+          <ThemedView
+            darkColor={TERTIARY_COLOR}
+            lightColor="gray"
+            key={re.name}
+            style={styles.itemContainer}>
+            <ThemedView
+              darkColor={TERTIARY_COLOR}
+              lightColor="gray"
+              style={styles.page}>
               <ThemedView style={styles.pageRight}>
                 <ThemedView
                   style={{
@@ -124,7 +108,7 @@ const PieChartLegend = ({list}) => {
                   }}></ThemedView>
                 <ThemedText type="subtitle2">{re?.name}</ThemedText>
               </ThemedView>
-              <ThemedView>
+              <ThemedView darkColor={TERTIARY_COLOR} lightColor="gray">
                 <ThemedText type="subtitle2">{re?.percentage}%</ThemedText>
               </ThemedView>
             </ThemedView>
@@ -135,7 +119,14 @@ const PieChartLegend = ({list}) => {
   };
 
   return (
-    <ThemedView style={{alignItems: 'center'}}>
+    <ThemedView
+      darkColor={TERTIARY_COLOR}
+      lightColor="gray"
+      style={{
+        alignItems: 'center',
+        height: 100,
+        borderRadius: BORDER_RADUIS,
+      }}>
       <FlatList
         ref={flatListRef}
         data={paginatedData}
@@ -148,11 +139,15 @@ const PieChartLegend = ({list}) => {
         viewabilityConfig={{viewAreaCoveragePercentThreshold: 50}}
       />
 
-      {/* Pagination Dots with Click Support */}
-      <ThemedView style={styles.pagination}>
+      <ThemedView
+        darkColor={TERTIARY_COLOR}
+        lightColor="gray"
+        style={styles.pagination}>
         {paginatedData.map((_, index) => (
           <TouchableOpacity key={index} onPress={() => goToPage(index)}>
             <ThemedView
+              darkColor={TERTIARY_COLOR}
+              lightColor="gray"
               style={[
                 styles.dot,
                 {
@@ -170,31 +165,22 @@ const PieChartLegend = ({list}) => {
   );
 };
 
-const Legend = ({color, label, percentage}) => {
-  return (
-    <ThemedView
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        gap: 24,
-        justifyContent: 'space-between',
-      }}>
-      <ThemedView style={{display: 'flex', flexDirection: 'row', gap: 4}}>
-        <ThemedView
-          style={{
-            backgroundColor: color,
-            width: 16,
-            height: 16,
-            borderRadius: '100%',
-          }}></ThemedView>
-        <ThemedText type="subtitle2">{label}</ThemedText>
-      </ThemedView>
-      <ThemedText type="subtitle2">{percentage} %</ThemedText>
-    </ThemedView>
-  );
-};
-
 const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    alignItems: 'center',
+    borderRadius: BORDER_RADUIS,
+    paddingTop: 16,
+  },
+  chartContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 10,
+    justifyContent: 'center',
+    paddingBottom: 8,
+    backgroundColor: 'transparent',
+  },
   renderContainer: {
     width,
   },
@@ -212,13 +198,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+    backgroundColor: 'transparent',
   },
 
-  pagination: {flexDirection: 'row', marginTop: 10},
+  pagination: {
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    paddingBottom: 5,
+    height: 25,
+  },
   dot: {
     width: 10,
     height: 10,
     borderRadius: 5,
     marginHorizontal: 5,
+    backgroundColor: 'transparent',
   },
 });

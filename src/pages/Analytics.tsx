@@ -87,7 +87,7 @@ export default function Analytics() {
     setCb(!cb);
   };
 
-  const handleDateFilter = (val: string, dates: any) => {
+  const handleDateFilter = (val: number, dates: any) => {
     updateDateFilter(val, dates);
     setCb(!cb);
   };
@@ -126,7 +126,6 @@ export default function Analytics() {
               flexDirection: 'row',
               alignItems: 'center',
               paddingHorizontal: 12,
-
               width: '100%',
               justifyContent: 'space-between',
             }}>

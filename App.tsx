@@ -6,9 +6,7 @@ import {
 } from '@react-navigation/native';
 
 import React, {useEffect, useState} from 'react';
-import {StatusBar, Text} from 'react-native';
 import Dashboard from './src/pages/Dashboard';
-import Analytics from './src/pages/Analytics';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {GlobalProvider} from './store/globalProvider';
@@ -20,6 +18,7 @@ import {ThemedView} from './src/components/ThemedView';
 import LoadingScreen from './src/components/LoadingScreen';
 import ToastManager from 'toastify-react-native';
 import Categories from './src/pages/Categories';
+import Transactions from './src/pages/Transactions';
 const Tab = createBottomTabNavigator();
 
 function App(): React.JSX.Element {
@@ -91,13 +90,17 @@ function App(): React.JSX.Element {
                           return (
                             <Icon name="dashboard" color={color} size={24} />
                           );
-                        } else if (route.name === 'Analytics') {
-                          return (
-                            <Icon name="equalizer" color={color} size={24} />
-                          );
+                          // } else if (route.name === 'Analytics') {
+                          //   return (
+                          //     <Icon name="equalizer" color={color} size={24} />
+                          //   );
                         } else if (route.name === 'Categories') {
                           return (
                             <Icon name="border-all" color={color} size={24} />
+                          );
+                        } else if (route.name === 'Transactions') {
+                          return (
+                            <Icon name="trending-up" color={color} size={24} />
                           );
                         }
                         return <Icon name="settings" color={color} size={24} />;
@@ -115,8 +118,8 @@ function App(): React.JSX.Element {
                       options={{headerShown: false}}
                     />
                     <Tab.Screen
-                      name="Analytics"
-                      component={Analytics}
+                      name="Transactions"
+                      component={Transactions}
                       options={{headerShown: false}}
                     />
                     <Tab.Screen

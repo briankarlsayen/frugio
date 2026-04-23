@@ -6,8 +6,7 @@ import {ThemedText} from './ThemedText';
 import {useColorScheme} from '@/hooks/useColorScheme';
 import {DateTimePickerAndroid} from '@react-native-community/datetimepicker';
 import CustomIconButton from './CustomIconButton';
-
-const MODAL_BG = '#201F1E';
+import {MODAL_BG} from '@/constants/colors';
 
 export default function InputDatePicker({date, onSelect}) {
   const INPUT_BG = useColorScheme() === 'dark' ? DARK_INPUT_BG : LIGHT_INPUT_BG;

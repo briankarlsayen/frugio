@@ -12,8 +12,7 @@ import ThemedHr from './ThemedHr';
 import Dropdown from './DropdownModal';
 import InputDatePicker from './InputDatePicker';
 import CustomIconButton from './CustomIconButton';
-// 353636
-const MODAL_BG = '#201F1E';
+import {MODAL_BG} from '@/constants/colors';
 const INPUT_BG = DARK_INPUT_BG;
 
 interface IBottomModal {

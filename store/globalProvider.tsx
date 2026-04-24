@@ -1,5 +1,11 @@
 import React, {createContext, useReducer, ReactNode} from 'react';
-import {GlobalState, GlobalContextType, Category, Expense} from './types.ts';
+import {
+  GlobalState,
+  GlobalContextType,
+  Category,
+  Expense,
+  IGetExpensesProps,
+} from './types.ts';
 import {getAllCategories, getAllExpenses} from '@/api/index.ts';
 import {filteredExpenses, formatedAmount} from '@/utils/index.ts';
 
@@ -85,11 +91,26 @@ export const GlobalProvider = ({children}: GlobalProviderProps) => {
         : [],
     });
   };
-  const updateExpenses = (expense: Expense[] | null) => {
-    const rawTotal = expense?.reduce((sum, item) => sum + item.amount, 0);
+  const updateExpenses = async (
+    filter: IGetExpensesProps,
+  ): Promise<Expense[]> => {
+    let dateFilter = filter?.dateFilter ?? state.dateFilter;
+    let dateRange = filter?.dateRange ?? state.dateRange;
+
+    const {from, to} = filteredExpenses({
+      dateFilter,
+      dateRange,
+    });
+    const expenses = await getAllExpenses({from, to});
+    const rawTotal = expenses?.data?.reduce(
+      (sum, item) => sum + item.amount,
+      0,
+    );
     const total = formatedAmount(rawTotal);
-    dispatch({type: 'SET_EXPENSES', payload: expense});
+
+    dispatch({type: 'SET_EXPENSES', payload: expenses?.data ?? []});
     dispatch({type: 'SET_TOTAL_EXPENSES', payload: total ?? 0});
+    return expenses?.data;
   };
   const updateSelectedExpenseId = (id: number | null) => {
     dispatch({type: 'SET_SELECTED_EXPENSE_ID', payload: id});
@@ -106,10 +127,13 @@ export const GlobalProvider = ({children}: GlobalProviderProps) => {
     });
   };
 
-  const getExpenses = async (): Promise<Expense[]> => {
+  const getExpenses = async (filter: IGetExpensesProps): Promise<Expense[]> => {
+    let dateFilter = filter.dateFilter ?? state.dateFilter;
+    let dateRange = filter.dateRange ?? state.dateRange;
+
     const {from, to} = filteredExpenses({
-      dateFilter: state.dateFilter,
-      dateRange: state.dateRange,
+      dateFilter,
+      dateRange,
     });
     const expenses = await getAllExpenses({from, to});
     const rawTotal = expenses?.data?.reduce(
@@ -127,14 +151,15 @@ export const GlobalProvider = ({children}: GlobalProviderProps) => {
     dispatch({type: 'SET_SELECTED_CATEGORY_ID', payload: id});
   };
 
-  const updateDateFilter = (dateFilter: number, dateRange: any) => {
+  const updateDateFilter = async (dateFilter: number, dateRange: any) => {
+    await getExpenses({dateFilter, dateRange});
     dispatch({
       type: 'SET_DATE_FILTER',
       payload: {dateFilter, ...(dateRange !== undefined && {dateRange})},
     });
   };
 
-  const updateDashboardDateFilter = (value: number) => {
+  const updateDashboardDateFilter = async (value: number) => {
     dispatch({
       type: 'SET_DASHBOARD_DATE_FILTER',
       payload: value,

@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   Animated,
 } from 'react-native';
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {LOGO_THEME_COLOR, TERTIARY_COLOR} from '../../hooks/useThemeColor';
 import {GlobalContext} from '../../store/globalProvider';
 import {Expense, GlobalContextType} from '../../store/types';
@@ -69,8 +69,8 @@ export default function Dashboard({navigation}) {
     updateCategories,
     updateSelectedExpenseId,
     updateDateFilter,
-    getExpenses,
     updateDashboardDateFilter,
+    updateExpenses,
   } = context as GlobalContextType;
 
   const sampleExpenses = state.expenses.slice(0, 5);
@@ -80,15 +80,12 @@ export default function Dashboard({navigation}) {
   const [modalType, setModalType] = useState<'add' | 'edit'>('add');
   const [open, setOpen] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
-  const [transList, setTransList] = useState([]);
-  const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([]);
   const [expenseFormVal, setExpenseFormVal] = useState<IExpenseFormVal>({
     categoryId: 3,
     amount: '',
     payDate: new Date(),
     description: '',
   });
-  const [totalExpenses, setTotalExpenses] = useState<string | null>(null);
 
   const [dateFilterFormVal, setDateFilterFormVal] =
     useState<IDateFilterFormVal>({
@@ -138,6 +135,7 @@ export default function Dashboard({navigation}) {
       Toast.error('Ooops something went wrong');
     }
     setCb(!cb);
+    await updateExpenses(null);
     handleClose();
     clearForm();
   };
@@ -149,6 +147,7 @@ export default function Dashboard({navigation}) {
       Toast.error('Ooops something went wrong');
     }
     setCb(!cb);
+    await updateExpenses(null);
     handleClose();
     clearForm();
   };
@@ -227,16 +226,13 @@ export default function Dashboard({navigation}) {
     const activeExpense = expenses.filter(i =>
       activeCategories.some(cat => cat === i.category_id),
     );
-    setFilteredExpenses(activeExpense);
     const rawTotal = activeExpense?.reduce((sum, item) => sum + item.amount, 0);
     const total = formatedAmount(rawTotal);
-    setTotalExpenses(total);
+    return {activeExpense, total};
   };
 
   const fetchExpenses = async () => {
-    const expenses = await getExpenses();
-    processList(expenses);
-    filterExpenses(expenses);
+    await updateExpenses({dateFilter: 6, dateRange: null});
   };
 
   const processList = (list: Expense[]) => {
@@ -272,16 +268,14 @@ export default function Dashboard({navigation}) {
       activeCategories.some(cat => cat === i.categoryId),
     );
 
-    setTransList(filteredTransList);
+    return filteredTransList;
   };
 
   useEffect(() => {
+    // * initial fetch of data
     fetchCategories();
-  }, []);
-
-  useEffect(() => {
     fetchExpenses();
-  }, [cb, state.categories, state.dateFilter, state.expenses]);
+  }, []);
 
   const openDateFilter = () => {
     setOpenFilter(true);
@@ -333,6 +327,16 @@ export default function Dashboard({navigation}) {
     navigation.navigate('Transactions');
   };
 
+  const {pieChartData, barChartData, totalExpense} = useMemo(() => {
+    const pieExpenses = processList(state.expenses);
+    const {activeExpense, total} = filterExpenses(state.expenses);
+    return {
+      pieChartData: pieExpenses,
+      barChartData: activeExpense,
+      totalExpense: total,
+    };
+  }, [state.categories, state.expenses]);
+
   return (
     <ThemedView style={styles.container}>
       <ThemedView
@@ -382,18 +386,18 @@ export default function Dashboard({navigation}) {
         lightColor="gray"
         style={styles.expenseSummary}>
         <ThemedText style={{fontSize: 42, lineHeight: 42}}>
-          {totalExpenses}
+          {totalExpense}
         </ThemedText>
       </ThemedView>
       <ThemedView>
         {selected === 'blue' ? (
           <ExpenseBarGraph
-            expenses={filteredExpenses}
+            expenses={barChartData}
             categories={state.categories}
             type={state.dashboardDateFilter}
           />
         ) : (
-          <ExpensePieChart list={transList} />
+          <ExpensePieChart list={pieChartData} />
         )}
       </ThemedView>
       <ThemedView style={styles.transHeadline}>

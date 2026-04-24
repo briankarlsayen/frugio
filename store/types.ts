@@ -33,6 +33,11 @@ export interface GlobalState {
   categoryFilter: {label: string; value: boolean}[];
 }
 
+export interface IGetExpensesProps {
+  dateFilter: any;
+  dateRange: any;
+}
+
 export type GlobalAction =
   | {type: 'SET_CATEGORIES'; payload: Category[] | null}
   | {type: 'SET_EXPENSES'; payload: Expense[] | null}
@@ -41,11 +46,11 @@ export type GlobalAction =
 export interface GlobalContextType {
   state: GlobalState;
   updateCategories: (category: Category[] | null) => void;
-  updateExpenses: (expense: Expense[] | null) => void;
+  updateExpenses: (props: IGetExpensesProps | null) => Promise<Expense[]>;
   updateSelectedExpenseId: (id: number | null) => void;
   getCategories: () => Promise<void>;
   updateSelectedCategoryId: (id: number | null) => void;
-  getExpenses: () => Promise<Expense[]>;
+  getExpenses: (props: IGetExpensesProps | null) => Promise<Expense[]>;
   updateDateFilter: (dateFilter: number, dateRange: any) => void;
   updateDashboardDateFilter: (value: number) => void;
   updateDashboardCategoryFilter: (

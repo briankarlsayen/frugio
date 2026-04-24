@@ -1,5 +1,5 @@
 import {ScrollView, StyleSheet, Dimensions} from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useMemo, useState} from 'react';
 import {ThemedView} from '../components/ThemedView';
 import TransactionList from '../components/TransactionList';
 import CustomIconButton from '../components/CustomIconButton';
@@ -9,14 +9,13 @@ import {LOGO_THEME_COLOR} from '@/hooks/useThemeColor';
 import {
   archiveExpense,
   createExpense,
-  getAllCategories,
   getExpenseById,
   updateExpense,
 } from '@/api';
 import {Toast} from 'toastify-react-native';
 import {convertLocalDateToUTC, convertUTCtoLocalDate} from '@/utils';
 import {GlobalContext} from '@/store/globalProvider';
-import {Expense, GlobalContextType} from '@/store/types';
+import {GlobalContextType} from '@/store/types';
 import {IDateFilterFormVal, IUpdateDateFilterField} from './Dashboard';
 import DateFilterModal from '../components/DateFilterModal';
 
@@ -37,11 +36,10 @@ export default function Transactions() {
   const context = useContext(GlobalContext);
   const {
     state,
-    updateCategories,
     updateSelectedExpenseId,
     updateDateFilter,
-    getExpenses,
     updateDashboardDateFilter,
+    updateExpenses,
   } = context as GlobalContextType;
 
   const selectedId = state?.selectedExpenseId;
@@ -50,7 +48,6 @@ export default function Transactions() {
   const [modalType, setModalType] = useState<'add' | 'edit'>('add');
   const [open, setOpen] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
-  const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([]);
 
   const [expenseFormVal, setExpenseFormVal] = useState<IExpenseFormVal>({
     categoryId: 3,
@@ -134,6 +131,7 @@ export default function Transactions() {
       Toast.error('Ooops something went wrong');
     }
     setCb(!cb);
+    await updateExpenses(null);
     handleClose();
     clearForm();
   };
@@ -145,6 +143,7 @@ export default function Transactions() {
       Toast.error('Ooops something went wrong');
     }
     setCb(!cb);
+    await updateExpenses(null);
     handleClose();
     clearForm();
   };
@@ -211,29 +210,15 @@ export default function Transactions() {
     setOpen(true);
   };
 
-  const fetchCategories = async () => {
-    const res = await getAllCategories();
-    updateCategories(res?.data);
-  };
-
-  const fetchExpenses = async () => {
-    const expenses = await getExpenses();
+  const filteredExpenses = useMemo(() => {
     const activeCategories = state?.categories
       .filter(f => f.is_active && f.is_checked)
       .map(m => m.id);
-    const activeExpense = expenses.filter(i =>
+    const activeExpense = state.expenses.filter(i =>
       activeCategories.some(cat => cat === i.category_id),
     );
-    setFilteredExpenses(activeExpense);
-  };
-
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  useEffect(() => {
-    fetchExpenses();
-  }, [cb, state.categories, state.dateFilter]);
+    return activeExpense;
+  }, [state.expenses, state.categories]);
 
   return (
     <ThemedView style={styles.container}>

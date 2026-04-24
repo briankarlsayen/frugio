@@ -90,10 +90,6 @@ function App(): React.JSX.Element {
                           return (
                             <Icon name="dashboard" color={color} size={24} />
                           );
-                          // } else if (route.name === 'Analytics') {
-                          //   return (
-                          //     <Icon name="equalizer" color={color} size={24} />
-                          //   );
                         } else if (route.name === 'Categories') {
                           return (
                             <Icon name="border-all" color={color} size={24} />

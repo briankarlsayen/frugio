@@ -66,3 +66,4 @@ npm run log
 [x] update transaction filter
 [x] update barchart filter
 [x] fix UI
+[ ] enchance responsiveness

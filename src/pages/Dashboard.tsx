@@ -8,7 +8,7 @@ import {
 import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {LOGO_THEME_COLOR, TERTIARY_COLOR} from '../../hooks/useThemeColor';
 import {GlobalContext} from '../../store/globalProvider';
-import {Expense, GlobalContextType} from '../../store/types';
+import {Category, Expense, GlobalContextType} from '../../store/types';
 import {
   archiveExpense,
   createExpense,
@@ -86,6 +86,9 @@ export default function Dashboard({navigation}) {
     payDate: new Date(),
     description: '',
   });
+  const [categoryList, setCategoryList] = useState<Category[]>(
+    state.categories,
+  );
 
   const [dateFilterFormVal, setDateFilterFormVal] =
     useState<IDateFilterFormVal>({
@@ -217,6 +220,7 @@ export default function Dashboard({navigation}) {
   const fetchCategories = async () => {
     const res = await getAllCategories();
     updateCategories(res?.data);
+    setCategoryList(res.data);
   };
 
   const filterExpenses = (expenses: Expense[]) => {
@@ -284,6 +288,10 @@ export default function Dashboard({navigation}) {
     });
   };
 
+  useEffect(() => {
+    setCategoryList(state.categories);
+  }, [state.categories]);
+
   const closeDateFilter = () => {
     setOpenFilter(false);
   };
@@ -337,6 +345,18 @@ export default function Dashboard({navigation}) {
     };
   }, [state.categories, state.expenses]);
 
+  const handleSubmitDateFilterModal = async () => {
+    handleFilter();
+    updateCategories(categoryList);
+  };
+
+  const updateCheckCategory = (id: number) => {
+    const newCategoryList = categoryList.map(item =>
+      item.id === id ? {...item, is_checked: !item.is_checked} : item,
+    );
+    setCategoryList(newCategoryList);
+  };
+
   return (
     <ThemedView style={styles.container}>
       <ThemedView
@@ -378,7 +398,7 @@ export default function Dashboard({navigation}) {
         </ThemedView>
         <ThemedText style={{marginRight: 60}}>Dashboard</ThemedText>
         <ThemedView>
-          <CustomIconButton onPress={openDateFilter} name="event" size={20} />
+          <CustomIconButton onPress={openDateFilter} name="event" size={24} />
         </ThemedView>
       </ThemedView>
       <ThemedView
@@ -446,9 +466,11 @@ export default function Dashboard({navigation}) {
           open={openFilter}
           handleClose={closeDateFilter}
           windowHeight={windowHeight}
-          handleSubmit={handleFilter}
+          handleConfirm={handleSubmitDateFilterModal}
           updateForm={updateFilterField}
           form={dateFilterFormVal}
+          categoryList={categoryList}
+          updateCheck={updateCheckCategory}
         />
       )}
     </ThemedView>

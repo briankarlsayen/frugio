@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React from 'react';
 import {
   KeyboardAvoidingView,
   Modal,
@@ -10,8 +10,7 @@ import {ThemedText} from './ThemedText';
 import {ThemedView} from './ThemedView';
 import {ThemedButton} from './ThemedButton';
 import {LOGO_THEME_COLOR, useThemeColor} from '@/hooks/useThemeColor';
-import {GlobalContext} from '@/store/globalProvider';
-import {Category, GlobalContextType} from '@/store/types';
+import {Category} from '@/store/types';
 import {IDateFilterFormVal, IUpdateDateFilterField} from '../pages/Dashboard';
 import ThemedHr from './ThemedHr';
 import CustomIconButton from './CustomIconButton';
@@ -24,8 +23,10 @@ interface IDateFilterModal {
   handleClose: () => void;
   windowHeight: number;
   form: IDateFilterFormVal;
+  categoryList: Category[];
   updateForm: (val: IUpdateDateFilterField) => void;
-  handleSubmit: () => void;
+  updateCheck: (id: number) => void;
+  handleConfirm: () => void;
 }
 
 export default function DateFilterModal({
@@ -33,27 +34,11 @@ export default function DateFilterModal({
   handleClose,
   windowHeight,
   form,
+  categoryList,
   updateForm,
-  handleSubmit,
+  updateCheck: updateCheckCategory,
+  handleConfirm,
 }: IDateFilterModal) {
-  const context = useContext(GlobalContext);
-  const {state, updateCategories} = context as GlobalContextType;
-  const [categoryList, setCategoryList] = useState<Category[]>(
-    state.categories,
-  );
-
-  const handleConfirm = async () => {
-    handleSubmit();
-    updateCategories(categoryList);
-  };
-
-  const updateCheckCategory = (id: number) => {
-    const newCategoryList = categoryList.map(item =>
-      item.id === id ? {...item, is_checked: !item.is_checked} : item,
-    );
-    setCategoryList(newCategoryList);
-  };
-
   const dateFilterOptions = [
     {
       value: 1,
@@ -82,7 +67,7 @@ export default function DateFilterModal({
         <ThemedView style={styles.overlay}>
           <ThemedView
             darkColor={MODAL_BG}
-            style={[styles.bottomSheet, {height: windowHeight * 0.5}]}>
+            style={[styles.bottomSheet, {height: windowHeight * 0.45}]}>
             <ThemedView darkColor={MODAL_BG} style={styles.headerContainer}>
               <ThemedText type="title" style={{textTransform: 'capitalize'}}>
                 Filter
@@ -192,7 +177,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.5)', // 👈 semi-transparent dark background
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   },

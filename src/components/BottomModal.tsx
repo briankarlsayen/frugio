@@ -93,7 +93,7 @@ export default function BottomModal({
         <ThemedView style={styles.overlay}>
           <ThemedView
             darkColor={MODAL_BG}
-            style={[styles.bottomSheet, {height: windowHeight * 0.55}]}>
+            style={[styles.bottomSheet, {height: windowHeight * 0.51}]}>
             <ThemedView
               darkColor={MODAL_BG}
               style={{

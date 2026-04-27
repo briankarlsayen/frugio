@@ -1,5 +1,5 @@
 import {ScrollView, StyleSheet, Dimensions} from 'react-native';
-import React, {useContext, useMemo, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {ThemedView} from '../components/ThemedView';
 import TransactionList from '../components/TransactionList';
 import CustomIconButton from '../components/CustomIconButton';
@@ -15,7 +15,7 @@ import {
 import {Toast} from 'toastify-react-native';
 import {convertLocalDateToUTC, convertUTCtoLocalDate} from '@/utils';
 import {GlobalContext} from '@/store/globalProvider';
-import {GlobalContextType} from '@/store/types';
+import {Category, GlobalContextType} from '@/store/types';
 import {IDateFilterFormVal, IUpdateDateFilterField} from './Dashboard';
 import DateFilterModal from '../components/DateFilterModal';
 
@@ -40,6 +40,7 @@ export default function Transactions() {
     updateDateFilter,
     updateDashboardDateFilter,
     updateExpenses,
+    updateCategories,
   } = context as GlobalContextType;
 
   const selectedId = state?.selectedExpenseId;
@@ -55,6 +56,10 @@ export default function Transactions() {
     payDate: new Date(),
     description: '',
   });
+
+  const [categoryList, setCategoryList] = useState<Category[]>(
+    state.categories,
+  );
 
   const [dateFilterFormVal, setDateFilterFormVal] =
     useState<IDateFilterFormVal>({
@@ -101,6 +106,10 @@ export default function Transactions() {
     }
     return false;
   };
+
+  useEffect(() => {
+    setCategoryList(state.categories);
+  }, [state.categories]);
 
   const handleSubmit = async () => {
     const convertedPayDate = convertUTCtoLocalDate(expenseFormVal?.payDate);
@@ -220,12 +229,24 @@ export default function Transactions() {
     return activeExpense;
   }, [state.expenses, state.categories]);
 
+  const handleSubmitDateFilterModal = async () => {
+    handleFilter();
+    updateCategories(categoryList);
+  };
+
+  const updateCheckCategory = (id: number) => {
+    const newCategoryList = categoryList.map(item =>
+      item.id === id ? {...item, is_checked: !item.is_checked} : item,
+    );
+    setCategoryList(newCategoryList);
+  };
+
   return (
     <ThemedView style={styles.container}>
       <ThemedView style={styles.pageHeaderText}>
         <ThemedText type="defaultSemiBold">Transactions</ThemedText>
         <ThemedView style={{paddingRight: 5}}>
-          <CustomIconButton onPress={openDateFilter} name="event" size={20} />
+          <CustomIconButton onPress={openDateFilter} name="event" size={24} />
         </ThemedView>
       </ThemedView>
       <ThemedView style={styles.recentContainer}>
@@ -264,9 +285,11 @@ export default function Transactions() {
           open={openFilter}
           handleClose={closeDateFilter}
           windowHeight={windowHeight}
-          handleSubmit={handleFilter}
+          handleConfirm={handleSubmitDateFilterModal}
           updateForm={updateFilterField}
           form={dateFilterFormVal}
+          categoryList={categoryList}
+          updateCheck={updateCheckCategory}
         />
       )}
     </ThemedView>
@@ -279,7 +302,7 @@ const styles = StyleSheet.create({
     height: '100%',
     position: 'relative',
     fontFamily: 'OpenSans',
-    paddingTop: 50,
+    paddingTop: 49.5,
   },
   pageHeaderText: {
     display: 'flex',

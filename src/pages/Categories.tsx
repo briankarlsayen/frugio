@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     height: '100%',
     position: 'relative',
     fontFamily: 'OpenSans',
-    paddingTop: 50,
+    paddingTop: 49.5,
   },
   pageHeaderText: {
     paddingTop: 13,

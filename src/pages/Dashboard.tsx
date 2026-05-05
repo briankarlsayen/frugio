@@ -30,6 +30,8 @@ import CustomIconButton from '../components/CustomIconButton';
 import ExpenseBarGraph from '../components/ExpenseBarGraph';
 import ExpensePieChart from '../components/ExpensePieChart';
 import DateFilterModal from '../components/DateFilterModal';
+import {DEFAULT_DATE_FILTER_ID} from '@/constants';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 export interface IExpenseFormVal {
   categoryId?: number | null;
@@ -80,6 +82,7 @@ export default function Dashboard({navigation}) {
   const [modalType, setModalType] = useState<'add' | 'edit'>('add');
   const [open, setOpen] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
+  const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const [expenseFormVal, setExpenseFormVal] = useState<IExpenseFormVal>({
     categoryId: 3,
     amount: '',
@@ -142,6 +145,12 @@ export default function Dashboard({navigation}) {
     handleClose();
     clearForm();
   };
+
+  const handleOpenConfirmationModal = () => {
+    setOpenConfirmationModal(true);
+    setOpen(false);
+  };
+
   const handleDelete = async () => {
     try {
       await archiveExpense(selectedId);
@@ -152,8 +161,10 @@ export default function Dashboard({navigation}) {
     setCb(!cb);
     await updateExpenses(null);
     handleClose();
+    closeConfirmationModal();
     clearForm();
   };
+
   const handleOpen = () => {
     setModalType('add');
     setOpen(true);
@@ -236,7 +247,7 @@ export default function Dashboard({navigation}) {
   };
 
   const fetchExpenses = async () => {
-    await updateExpenses({dateFilter: 6, dateRange: null});
+    await updateExpenses({dateFilter: DEFAULT_DATE_FILTER_ID, dateRange: null});
   };
 
   const processList = (list: Expense[]) => {
@@ -296,8 +307,12 @@ export default function Dashboard({navigation}) {
     setOpenFilter(false);
   };
 
+  const closeConfirmationModal = () => {
+    setOpenConfirmationModal(false);
+  };
+
   const handleFilter = () => {
-    let dateFilterVal = 6;
+    let dateFilterVal = DEFAULT_DATE_FILTER_ID;
     switch (dateFilterFormVal.dateVal) {
       case 1:
         dateFilterVal = 6;
@@ -456,7 +471,7 @@ export default function Dashboard({navigation}) {
           windowHeight={windowHeight}
           modalType={modalType}
           handleSubmit={handleSubmit}
-          handleDelete={handleDelete}
+          handleDelete={handleOpenConfirmationModal}
           updateForm={updateField}
           form={expenseFormVal}
         />
@@ -471,6 +486,14 @@ export default function Dashboard({navigation}) {
           form={dateFilterFormVal}
           categoryList={categoryList}
           updateCheck={updateCheckCategory}
+        />
+      )}
+      {openConfirmationModal && (
+        <ConfirmationModal
+          open={openConfirmationModal}
+          handleClose={closeConfirmationModal}
+          windowHeight={windowHeight}
+          handleDelete={handleDelete}
         />
       )}
     </ThemedView>

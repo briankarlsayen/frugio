@@ -18,6 +18,7 @@ import {GlobalContext} from '@/store/globalProvider';
 import {Category, GlobalContextType} from '@/store/types';
 import {IDateFilterFormVal, IUpdateDateFilterField} from './Dashboard';
 import DateFilterModal from '../components/DateFilterModal';
+import ConfirmationModal from '../components/ConfirmationModal';
 
 export interface IExpenseFormVal {
   categoryId?: number | null;
@@ -49,6 +50,7 @@ export default function Transactions() {
   const [modalType, setModalType] = useState<'add' | 'edit'>('add');
   const [open, setOpen] = useState(false);
   const [openFilter, setOpenFilter] = useState(false);
+  const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
 
   const [expenseFormVal, setExpenseFormVal] = useState<IExpenseFormVal>({
     categoryId: 3,
@@ -98,6 +100,13 @@ export default function Transactions() {
   const handleClose = () => {
     clearForm();
     setOpen(false);
+  };
+  const handleOpenConfirmationModal = () => {
+    setOpenConfirmationModal(true);
+    setOpen(false);
+  };
+  const closeConfirmationModal = () => {
+    setOpenConfirmationModal(false);
   };
 
   const checkFormVal = (obj: Record<string, any>) => {
@@ -154,6 +163,7 @@ export default function Transactions() {
     setCb(!cb);
     await updateExpenses(null);
     handleClose();
+    closeConfirmationModal();
     clearForm();
   };
   const handleOpen = () => {
@@ -275,7 +285,7 @@ export default function Transactions() {
           windowHeight={windowHeight}
           modalType={modalType}
           handleSubmit={handleSubmit}
-          handleDelete={handleDelete}
+          handleDelete={handleOpenConfirmationModal}
           updateForm={updateField}
           form={expenseFormVal}
         />
@@ -290,6 +300,14 @@ export default function Transactions() {
           form={dateFilterFormVal}
           categoryList={categoryList}
           updateCheck={updateCheckCategory}
+        />
+      )}
+      {openConfirmationModal && (
+        <ConfirmationModal
+          open={openConfirmationModal}
+          handleClose={closeConfirmationModal}
+          windowHeight={windowHeight}
+          handleDelete={handleDelete}
         />
       )}
     </ThemedView>

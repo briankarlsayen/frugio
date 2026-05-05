@@ -76,6 +76,8 @@ export default function BottomModal({
     };
   }, []);
 
+  const modalHeight = modalType === 'add' ? 0.51 : 0.563;
+
   return (
     <Modal
       statusBarTranslucent
@@ -93,7 +95,7 @@ export default function BottomModal({
         <ThemedView style={styles.overlay}>
           <ThemedView
             darkColor={MODAL_BG}
-            style={[styles.bottomSheet, {height: windowHeight * 0.51}]}>
+            style={[styles.bottomSheet, {height: windowHeight * modalHeight}]}>
             <ThemedView
               darkColor={MODAL_BG}
               style={{

@@ -119,6 +119,10 @@ export const filteredExpenses = ({
       from = null;
       to = null;
       break;
+    default:
+      from = lastFourWeeksAgo;
+      to = localToday;
+      break;
   }
 
   return {

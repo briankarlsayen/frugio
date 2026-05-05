@@ -8,6 +8,7 @@ import {
 } from './types.ts';
 import {getAllCategories, getAllExpenses} from '@/api/index.ts';
 import {filteredExpenses, formatedAmount} from '@/utils/index.ts';
+import {DEFAULT_DATE_FILTER_ID} from '@/constants/index.ts';
 
 // Initial state
 const initialState: GlobalState = {
@@ -16,7 +17,7 @@ const initialState: GlobalState = {
   selectedExpenseId: null,
   selectedCategoryId: null,
   totalExpenses: 0,
-  dateFilter: 3,
+  dateFilter: DEFAULT_DATE_FILTER_ID,
   dateRange: null,
   dashboardDateFilter: 1,
   categoryFilter: [],
